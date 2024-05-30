@@ -1,0 +1,11 @@
+# ninja log v5
+9	82	7387791978221685	untitled6_autogen/timestamp	486f1c1fb491acab
+9	82	7387791978221685	untitled6_autogen/mocs_compilation.cpp	486f1c1fb491acab
+151	202	7385343792544139	CMakeFiles/untitled6.dir/untitled6_autogen/mocs_compilation.cpp.obj	8577e8a5cc6349ef
+3137	3460	7387793255064940	untitled6.exe	842bf778a293f542
+6	1753	7388012906204870	build.ninja	cbdc2f0b41edd641
+11	3136	7387793253316729	CMakeFiles/untitled6.dir/main.cpp.obj	95336fe3aae0d6c6
+9	82	7387791978221685	C:/Users/kpiot/CLionProjects/ManyValuedLogicSolver/cmake-build-debug/untitled6_autogen/timestamp	486f1c1fb491acab
+9	82	7387791978221685	C:/Users/kpiot/CLionProjects/ManyValuedLogicSolver/cmake-build-debug/untitled6_autogen/mocs_compilation.cpp	486f1c1fb491acab
+101	631	7387791344050912	CMakeFiles/untitled6.dir/src/parser/ValueToken.cpp.obj	b8fe9d29f9972fc9
+98	692	7387791344657113	CMakeFiles/untitled6.dir/src/parser/lexer/Lexer.cpp.obj	84f5cc40d0a48098
