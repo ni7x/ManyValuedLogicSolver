@@ -1,4 +1,4 @@
-#include "types/TokenType.h"
+#include "TokenType.h"
 #include <iostream>
 
 #ifndef TOKEN_H

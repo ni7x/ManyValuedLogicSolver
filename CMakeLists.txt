@@ -14,9 +14,11 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(untitled6 main.cpp
-        src/parser/lexer/Lexer.h
-        src/parser/ValueToken.h
+add_executable(untitled6 src/main.cpp
+        src/lexer/Lexer.h
+        src/parser/types/ValueToken.h
+        src/lexer/Lexer.l
+        src/parser/Parser.y
 )
 target_link_libraries(untitled6
         Qt::Core

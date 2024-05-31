@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "../Token.h"
-#include "../ValueToken.h"
+#include "../parser/types/Token.h"
+#include "../parser/types/ValueToken.h"
 
 class Lexer {
 private:
