@@ -1,31 +1,18 @@
-Not Parsed: !
-Not Parsed: !!
-Not Parsed: (a & b
-Not Parsed: sd
-Not Parsed: %
-Parsed: a & b
-Parsed: a | c
-Parsed: b | 1
-Parsed: 1 & c
-Parsed: a & (b | c)
-Parsed: (a | b) & (c | d)
-Parsed: (a & b) | (c & d)
-Parsed: !(a & b)
-Parsed: (a => b) | (b => c)
-Parsed: (a & b) <=> (b & a)
-Parsed: !(a <=> b)
-Parsed: (a & b) | (c & d)
-Parsed: (a | b) & (c | d)
-Parsed: !(a & b)
-Parsed: !(a | b)
-Parsed: !(a & (b | c))
-Parsed: (a & b) => (c | d)
-Parsed: (a | b) <=> (c & d)
-Parsed: (a & b) | !(c & d)
-Parsed: (a => b) | !(c => d)
-Parsed: !(a <=> b)
-Parsed: !(a | (b & c))
-Parsed: (a & (b | c)) <=> ((a & b) | (a & c))
-Parsed: (a & b) | (c & d & e)
-Parsed: (a | b) & (c | d | e)
-Parsed: (a | b | c) & (d | e | f)
+Test Passed: a & b = 0.00 (Expected: 0.00)
+Test Passed: c | d = 0.12 (Expected: 0.12)
+Test Passed: a => b = 1.00 (Expected: 1.00)
+Test Passed: b => a = 0.96 (Expected: 0.96)
+Test Passed: a <=> a = 1.00 (Expected: 1.00)
+Test Passed: a <=> b = 0.96 (Expected: 0.96)
+Test Passed: (a & b) | c = 0.08 (Expected: 0.08)
+Test Passed: a & (b | c) = 0.00 (Expected: 0.00)
+Test Passed: a | (b & c) = 0.04 (Expected: 0.04)
+Test Passed: a & !b = 0.00 (Expected: 0.00)
+Test Passed: !a & b = 0.04 (Expected: 0.04)
+Test Passed: !a | !b = 1.00 (Expected: 1.00)
+Test Passed: (a => b) & (b => c) = 0.96 (Expected: 0.96)
+Test Passed: a & (b <=> c) = 0.00 (Expected: 0.00)
+Test Passed: (a <=> b) | (b <=> c) = 0.96 (Expected: 0.96)
+Test Passed: (a & b & c) = 0.00 (Expected: 0.00)
+Test Passed: (a | b | c) = 0.08 (Expected: 0.08)
+Test Passed: !(a & b & c) = 1.00 (Expected: 1.00)

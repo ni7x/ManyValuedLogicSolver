@@ -7,7 +7,7 @@
 
 %%
 
-[a-z]                   { yylval.character = *yytext - 'a'; return VARIABLE; }
+[a-z]                   { yylval.character = *yytext; return VARIABLE; }
 [0-9]+(\.[0-9]+)?       { yylval.number = atof(yytext); return NUMBER; }
 &                       { return AND; }
 \<=>                     { return EQUIVALENCE; }

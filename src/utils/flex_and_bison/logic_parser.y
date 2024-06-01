@@ -1,8 +1,14 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-void yyerror(const char* s);
+typedef struct {
+    float (*map_function)(char);
+    float *result;
+} ParserParams;
+
+void yyerror (ParserParams *parse_params, const char *msg);
 int yylex();
 
 %}
@@ -12,34 +18,44 @@ int yylex();
     char character;
 }
 
+%parse-param { ParserParams *params }
+
+
 %token<number> NUMBER
 %token<character> VARIABLE
 %token AND EQUIVALENCE OR IMPLICATION 
 %token NOT
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS
 %token END_OF_LINE
+ 
+/* %right IMPLICATION EQUIVALENCE AND OR od prawej do lewej */
+
+/* NOT AND OR EQUICALENCE IMPLICATION */
+
+%right IMPLICATION
+%right EQUIVALENCE
+%left OR
+%left AND
+%right NOT
 
 %nonassoc LEFT_PARENTHESIS RIGHT_PARENTHESIS
-%right NOT
-%left AND
-%left OR
-%left IMPLICATION
-%left EQUIVALENCE
 
-%start formula
+%type<number> formula
+%type<number> formula_line
 
-
+%start formula_line
 
 %%
+formula_line: formula {$$ = $1; *params->result = $1;}
 
-formula: VARIABLE
-        | NUMBER
-        | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS
-        | NOT formula
-        | formula AND formula
-        | formula OR formula
-        | formula IMPLICATION formula
-        | formula EQUIVALENCE formula
-;
+formula: VARIABLE { $$ = (*params->map_function)($1); }
+       | NUMBER { $<number>$ = $1; }
+       | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
+       | NOT formula { $$ = 1.0 - $2; }
+       | formula AND formula { $$ = fmin($1, $3); printf("val(%.2f & %.2f) = %.2f \n", $1, $3, $$); }
+       | formula OR formula { $$ = fmax($1, $3); printf("val(%.2f | %.2f) = %.2f \n", $1, $3, $$); }
+       | formula IMPLICATION formula { $$ = fmax(1.0 - $1, $3); printf("val(%.2f => %.2f) = %.2f) \n", $1, $3, $$); }
+       | formula EQUIVALENCE formula { $$ = fmin(fmax(1.0 - $1, $3), fmax(1.0 - $3, $1));  printf("val(%.2f <=> %.2f) = %.2f \n", $1, $3, $$); }
+       ;
 
 %%
