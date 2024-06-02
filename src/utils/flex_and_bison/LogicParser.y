@@ -3,10 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-typedef struct {
-    float (*map_function)(char);
-    float *result;
-} ParserParams;
+#include "ParserParams.h"
 
 void yyerror (ParserParams *parse_params, const char *msg);
 int yylex();
@@ -28,9 +25,8 @@ int yylex();
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS
 %token END_OF_LINE
  
-/* %right IMPLICATION EQUIVALENCE AND OR od prawej do lewej */
 
-/* NOT AND OR EQUICALENCE IMPLICATION */
+/* ORDER = NOT AND OR EQUICALENCE IMPLICATION */
 
 %right IMPLICATION
 %right EQUIVALENCE

@@ -59,6 +59,7 @@
   "files.associations": {
     "stdio.h": "c",
     "functional": "c",
-    "string.h": "c"
-  }
+    "string.h": "c",
+    "parserparams.h": "c"
+}
 }

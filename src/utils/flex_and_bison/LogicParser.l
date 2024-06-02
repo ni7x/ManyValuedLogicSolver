@@ -2,7 +2,7 @@
 
 %{
 #include <stdio.h>
-#include "logic_parser.tab.h"
+#include "LogicParser.tab.h"
 %}
 
 %%

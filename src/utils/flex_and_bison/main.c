@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parse_params.h"
+#include "ParserParams.h"
 #include <math.h>
 
 extern int yyparse();
@@ -11,9 +11,8 @@ int  yyparse (ParserParams *parse_params);
 void yy_scan_string(const char* s);
 
 char* read_input_line(char* buffer, size_t size);
-void parse_and_test(const char* input_filename, const char* output_filename);
-void test_formula(const char* formula, FILE* output_file);
-void parse_and_compare_test(const char* input_filename, const char* output_filename);
+void read_and_parse_input();
+void test_parser(const char* input_filename, const char* output_filename);
 
 float map_letter_to_value(char letter) {
     if (letter >= 'a' && letter <= 'z') {
@@ -29,60 +28,15 @@ float map_letter_to_value(char letter) {
 int main(int argc, char *argv[]) {
     if (argc == 3) {
         printf("\n\n-----RUNNING TESTS------\n\n");
-        parse_and_compare_test(argv[1], argv[2]);
+        test_parser(argv[1], argv[2]);
     }else{
         printf("\nENTER LOGICAL FORMULA: \n");
-        char input[256];
-        yyin = stdin;
-        read_input_line(input, sizeof(input));
-        yy_scan_string(input);
-        ParserParams params;
-        params.map_function = &map_letter_to_value;
-        float parsed_result;
-        params.result = &parsed_result;
-        yyparse(&params);
-        printf("Parsed result: %.2f\n", parsed_result);
+        read_and_parse_input();
     }
 
     return 0;
 }
 
-void parse_and_test(const char* input_filename, const char* output_filename) {
-    FILE *input_file = fopen(input_filename, "r");
-    if (input_file == NULL) {
-        perror("Error opening input file");
-        exit(1);
-    }
-
-    FILE *output_file = fopen(output_filename, "w");
-    if (output_file == NULL) {
-        perror("Error opening output file");
-        exit(1);
-    }
-
-    char input[256];
-    while (fgets(input, sizeof(input), input_file) != NULL) {
-        input[strcspn(input, "\n")] = '\0';
-        test_formula(input, output_file);
-    }
-
-    fclose(input_file);
-    fclose(output_file);
-}
-
-void test_formula(const char* formula, FILE* output_file) {
-    yy_scan_string(formula);
-    ParserParams params;
-    params.map_function = &map_letter_to_value;
-    float parsed_result;
-    params.result = &parsed_result;
-    int parse_result = yyparse(&params);
-    if (parse_result == 0) {
-        fprintf(output_file, "Parsed: %s = %.2f\n", formula, parsed_result);
-    } else {
-        fprintf(output_file, "Not Parsed: %s\n", formula);
-    }
-}
 
 char* read_input_line(char* buffer, size_t size) {
     int c;
@@ -94,11 +48,30 @@ char* read_input_line(char* buffer, size_t size) {
     return buffer;
 }
 
+void read_and_parse_input() {
+    char input[256];
+    yyin = stdin;
+    read_input_line(input, sizeof(input));
+    yy_scan_string(input);
+    
+    ParserParams params;
+    params.map_function = &map_letter_to_value;
+    float parsed_result;
+    params.result = &parsed_result;
+
+    if (yyparse(&params) == 0) {
+        printf("Parsed result: %.2f\n", parsed_result);
+    } else {
+        printf("Failed to parse the input.\n");
+    }
+}
+
+
 void yyerror (ParserParams *parse_params, const char *msg){
     fprintf(stderr, "Parse error: %s\n", msg);
 }
 
-void parse_and_compare_test(const char* input_filename, const char* output_filename) {
+void test_parser(const char* input_filename, const char* output_filename) {
     FILE *input_file = fopen(input_filename, "r");
     if (input_file == NULL) {
         perror("Error opening input file");
@@ -115,7 +88,6 @@ void parse_and_compare_test(const char* input_filename, const char* output_filen
     while (fgets(input, sizeof(input), input_file) != NULL) {
         input[strcspn(input, "\n")] = '\0';
 
-        // Split the input into formula and expected result
         char *token = strtok(input, ";");
         if (token != NULL) {
             char formula[128];

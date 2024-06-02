@@ -1,4 +1,4 @@
-EXEC = logic_parser
+EXEC = LogicParser
 MAIN_FILE = main.c
 GENERATED_DIR = generated_files
 
@@ -13,7 +13,7 @@ $(GENERATED_DIR)/$(EXEC).yy.c: $(EXEC).l $(GENERATED_DIR)/$(EXEC).tab.h
 	flex -o$(GENERATED_DIR)/$(EXEC).yy.c $(EXEC).l
 
 $(GENERATED_DIR)/$(EXEC): $(GENERATED_DIR)/$(EXEC).yy.c $(GENERATED_DIR)/$(EXEC).tab.c $(GENERATED_DIR)/$(EXEC).tab.h $(MAIN_FILE)
-	gcc -o $(GENERATED_DIR)/$(EXEC)  $(GENERATED_DIR)/$(EXEC).tab.c $(GENERATED_DIR)/$(EXEC).yy.c $(MAIN_FILE)
+	gcc -o $(GENERATED_DIR)/$(EXEC)  $(GENERATED_DIR)/$(EXEC).tab.c $(GENERATED_DIR)/$(EXEC).yy.c $(MAIN_FILE) -I.
 
 clean:
 	rm -rf $(GENERATED_DIR)
