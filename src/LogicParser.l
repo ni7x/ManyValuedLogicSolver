@@ -22,6 +22,9 @@
 \)                      { return Parser::token::RIGHT_PARENTHESIS; }
 \n                      { return Parser::token::END_OF_LINE; }
 [ \t]                   { /* skip whitespace */ }
-.                       { fprintf(stderr, "Error: Unrecognized character '%s'\n", yytext); }
+.                       {   std::ostringstream oss;
+                            oss << "Error: Unrecognized character '" << yytext << "'\n";
+                            throw std::runtime_error(oss.str());
+                        }
 
 %%

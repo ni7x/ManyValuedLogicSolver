@@ -15,9 +15,31 @@ namespace formula_solver {
         variable_evaluations = new_variable_evaluations;
     }
 
+    FormulaSolver::FormulaSolver(std::istream& input_stream, std::ostream& error_stream, 
+                                 int n, int k)
+        : FormulaSolver(input_stream, error_stream) {
+            number_of_variables = n;
+            number_of_true_variables = k;
+            variable_evaluations.clear();
+            for (int i = 0; i < 25; i++) {
+                char variable_name = 'a' + i; 
+                variable_evaluations[variable_name] = 0.0; 
+        }
+    }
+
     void FormulaSolver::reset_input() {
         input_stream.clear();
         input_stream.seekg(0, std::ios::beg);
+    }
+
+    bool FormulaSolver::is_formula_valid() {
+        try {
+            parser.parse();
+            return true;
+        } catch (const std::exception& e) {
+            std::cerr << "Error: Invalid formula syntax. " << e.what() << std::endl;
+            return false;
+        }
     }
 
     double FormulaSolver::evaluate_formula() {
@@ -51,9 +73,10 @@ namespace formula_solver {
 
     std::vector<double> generate_last_k_values(int n, int k) {
         std::vector<double> last_k_values;
-        double step = 1.0 / n;
-        for (int i = n - k + 1; i <= n; ++i) {
+        double step = 1.0 / (n - 1);
+        for (int i = n - k; i <= n-1; ++i) {
             last_k_values.push_back(i * step);
+            std::cout << i * step << std::endl;
         }
         return last_k_values;
     }
@@ -77,7 +100,8 @@ namespace formula_solver {
         }
     }
 
-    std::set<std::map<char, double>> generate_variable_evaluationss(int num_variables) {
+    std::set<std::map<char, double>> generate_variable_evaluations(int num_variables) {
+
         std::set<std::map<char, double>> result;
         std::vector<double> current_values;
         generate_combinations(num_variables, current_values, result);
@@ -86,10 +110,11 @@ namespace formula_solver {
 
     std::set<std::map<char, double>> FormulaSolver::generate_all_true_evaluations(int num_variables, int true_variables) {
         std::vector<double> true_values = generate_last_k_values(num_variables, true_variables);
-        auto evaluations = generate_variable_evaluationss(num_variables);
+        auto evaluations = generate_variable_evaluations(num_variables);
         std::set<std::map<char, double>> true_evaluations;
 
         for (const auto& evaluation : evaluations) {
+        
             auto it = std::find(true_values.begin(), true_values.end(), evaluate_formula(evaluation));
             if (it != true_values.end()) {
                 true_evaluations.insert(evaluation);
