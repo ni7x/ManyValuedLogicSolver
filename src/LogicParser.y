@@ -47,33 +47,22 @@
 %nonassoc LEFT_PARENTHESIS RIGHT_PARENTHESIS
 
 %type<double> formula
-%type<double> formula_line
+%type<double> logical_expression
 
-%start formula_line
+%start logical_expression
 
 %%
-formula_line: formula {$$ = $1; solver->set_formula_evaluation_result($1);}
+logical_expression: formula {$$ = $1; solver->set_formula_evaluation_result($1);}
 
-formula: VARIABLE { $$ = solver->get_variable_value($1); }
-       | NUMBER { $$ = $1; }
-       | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
-       | NOT formula { $$ = 1.0 - $2; }
-       | formula AND formula { 
-                $$ = fmin($1, $3); 
-                /*std::cout << "val(" << $1 << " & " << $3 << ") = " << $$ << std::endl; */
-        }
-        | formula OR formula { 
-            $$ = fmax($1, $3); 
-            /*std::cout << "val(" << $1 << " | " << $3 << ") = " << $$ << std::endl; */
-        }
-        | formula IMPLICATION formula { 
-            $$ = fmax(1.0 - $1, $3); 
-            /*std::cout << "val(" << $1 << " => " << $3 << ") = " << $$ << ")" << std::endl; */
-        }
-        | formula EQUIVALENCE formula { 
-            $$ = fmin(fmax(1.0 - $1, $3), fmax(1.0 - $3, $1));  
-            /*std::cout << "val(" << $1 << " <=> " << $3 << ") = " << $$ << std::endl; */
-        }
-       ;
+formula:
+      VARIABLE { $$ = solver->get_variable_value($1); }
+    | NUMBER { $$ = $1; }
+    | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
+    | NOT formula { $$ = 1.0 - $2; }
+    | formula AND formula { $$ = fmin($1, $3); }
+    | formula OR formula { $$ = fmax($1, $3); }
+    | formula IMPLICATION formula { $$ = fmax(1.0 - $1, $3); }
+    | formula EQUIVALENCE formula { $$ = fmin(fmax(1.0 - $1, $3), fmax(1.0 - $3, $1)); }
+    ;
 
 %%
