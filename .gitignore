@@ -7,3 +7,10 @@ cmake-build-debug/**
 /CMakeFiles
 .idea
 .vscode
+/src/generated_files
+/src/.vscode
+/build
+output.txt
+src/.vscode/c_cpp_properties.json
+src/.vscode/launch.json
+src/.vscode/settings.json

@@ -6,7 +6,7 @@
 #define YY_DECL int formula_solver::Scanner::lex(formula_solver::Parser::semantic_type *yylval)
 %}
 
-%option c++ interactive noyywrap noyylineno nodefault
+%option c++ noyywrap noyylineno nodefault
 
 %%
 

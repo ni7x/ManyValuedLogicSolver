@@ -86,8 +86,7 @@ namespace formula_solver {
         return last_k_values;
     }
 
-    void FormulaSolver::generate_combinations(int number_of_logical_values, std::vector<double>& current_values,  //todo lepszy algroytm
-                               std::set<std::map<char, double>>& result) {
+    void FormulaSolver::generate_combinations(int number_of_logical_values, std::vector<double>& current_values, std::set<std::map<char, double>>& result) {
         if (current_values.size() == variable_evaluations.size()) {
             std::map<char, double> evaluation;
             int i = 0;
@@ -121,7 +120,6 @@ namespace formula_solver {
         std::set<std::map<char, double>> true_evaluations;
         std::cout << evaluations.size() << " total evaluations" << std::endl;
         for (const auto& evaluation : evaluations) {
-
             auto it = std::find_if(true_values.begin(), true_values.end(), [&](double true_value) {
                 double formula_value = evaluate_formula(evaluation);
                 return std::abs(true_value - formula_value) < 1e-6;;

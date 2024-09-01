@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
     std::string input_line;
     std::getline(std::cin, input_line);
     std::istringstream input_formula(input_line);
-
     formula_solver::FormulaSolver solver(input_formula, std::cerr, n, k);
 
     std::ofstream output_file("output.txt");

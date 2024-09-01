@@ -13,7 +13,7 @@
     }
 }
 
-%code {
+%code top {
     #include "Scanner.h"
     #include "FormulaSolver.h"
     #define yylex(x) scanner->lex(x)
