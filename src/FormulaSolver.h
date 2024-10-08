@@ -8,12 +8,13 @@
 #include <vector>
 #include <unordered_map>
 #include "Scanner.h"
+#include <list>
+#include "TruthTable.h"
 
 namespace formula_solver {
 
     class FormulaSolver {
     public:
-        FormulaSolver(std::istream& input_stream, std::ostream& error_stream);
         FormulaSolver(std::istream& input_stream, std::ostream& error_stream, int n, int k);
 
         double evaluate_formula(const std::map<char, double>& new_variable_evaluations);
@@ -24,10 +25,12 @@ namespace formula_solver {
         void set_formula_evaluation_result(double result);
         bool is_formula_valid();
         void add_variable_name(char variable_name);
+        int number_of_logical_values;
 
         std::set<std::map<char, double>> generate_all_true_evaluations(int number_of_logical_values, int number_of_true_logical_values);
 
     private:
+        FormulaSolver(std::istream& input_stream, std::ostream& error_stream);
         std::istream& input_stream;
         std::ostream& error_stream;
         Scanner scanner;
@@ -36,7 +39,8 @@ namespace formula_solver {
         bool is_evaluation_mode = false;
         double formula_evaluation_result;
         std::unordered_map<char, double> variable_evaluations;
-        int number_of_logical_values;
+
+        double add_func(double a, double b);
         int number_of_true_logical_values;
 
         void parse_and_reset();

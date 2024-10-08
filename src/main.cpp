@@ -26,6 +26,17 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+
+    TruthTable table(LogicalOperator::AND, 3); // Create a truth table with 3 variables
+
+    // Setting values in bulk for testing
+    std::vector<double> values = {1, 2, 3.0,  // Corresponds to row 0
+                                      4, 5,      // Corresponds to row 1
+                                        6.0};          // Corresponds to row 2
+    table.set_cells(values); // Set all cells in one go
+
+    // Print the truth table
+    table.print(); // This will now print the full table
     std::cout << "----------ENTER FORMULA----------" << std::endl;
 
     std::string input_line;

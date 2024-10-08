@@ -4,6 +4,10 @@
 
 namespace formula_solver {
 
+    double FormulaSolver::add_func(double a, double b){
+
+    }
+
     FormulaSolver::FormulaSolver(std::istream& input_stream, std::ostream& error_stream)
         : input_stream(input_stream), error_stream(error_stream),
           scanner(&input_stream, &error_stream), parser(&scanner, this){
@@ -132,4 +136,6 @@ namespace formula_solver {
 
         return true_evaluations;
     }
+
+
 }
