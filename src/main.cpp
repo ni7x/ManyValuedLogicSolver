@@ -27,48 +27,17 @@ int main(int argc, char *argv[]) {
     }
 
 
-    TruthTable table(LogicalOperator::AND, 3); // Create a truth table with 3 variables
-
-    // Setting values in bulk for testing
-    std::vector<double> values = {1, 2, 3.0,  // Corresponds to row 0
-                                      4, 5,      // Corresponds to row 1
-                                        6.0};          // Corresponds to row 2
-    table.set_cells(values); // Set all cells in one go
-
-    // Print the truth table
-    table.print(); // This will now print the full table
     std::cout << "----------ENTER FORMULA----------" << std::endl;
 
     std::string input_line;
     std::getline(std::cin, input_line);
     std::istringstream input_formula(input_line);
     formula_solver::FormulaSolver solver(input_formula, std::cerr, n, k);
-
     std::ofstream output_file("output.txt");
 
-    auto start_time = std::chrono::steady_clock::now();
-
-    if (!output_file.is_open()) {
-        std::cerr << "Error opening output file!" << std::endl;
-        return 1; 
-    }
-
-    for (const auto& evaluation :  solver.generate_all_true_evaluations(n, k)) { 
-        for (const auto& pair : evaluation) {
-            output_file << pair.first << ": " << pair.second << " ";
-        }
-        output_file << std::endl;
-    }
-
-    std::cout << "--WRITING TO output.txt COMPLETED--" << std::endl;
-
-
-    auto end_time = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end_time - start_time;
-    std::cout << "Time elapsed: " << std::fixed << std::setprecision(2) << elapsed_seconds.count() << " seconds." << std::endl;
+    solver.find_all_tautological_logical_operators();
 
     output_file.close();
-    return 0;
 }
 
 int yyFlexLexer::yylex() {

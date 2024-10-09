@@ -17,18 +17,19 @@ namespace formula_solver {
     public:
         FormulaSolver(std::istream& input_stream, std::ostream& error_stream, int n, int k);
 
-        double evaluate_formula(const std::map<char, double>& new_variable_evaluations);
+        int evaluate_formula(const std::map<char, int>& new_variable_evaluations, std::vector<TruthTable> operator_functions);
 
-        double get_variable_value(char variable);
-        void set_variables(const std::map<char, double>& new_variable_evaluations);
+        int get_variable_value(char variable);
+        void set_variables(const std::map<char, int>& new_variable_evaluations);
 
-        void set_formula_evaluation_result(double result);
+        void set_formula_evaluation_result(int result);
         bool is_formula_valid();
         void add_variable_name(char variable_name);
         int number_of_logical_values;
+        std::vector<TruthTable> logical_operators;
 
-        std::set<std::map<char, double>> generate_all_true_evaluations(int number_of_logical_values, int number_of_true_logical_values);
-
+        void find_all_tautological_logical_operators();
+        std::vector<std::map<char, int>> generate_all_variables_evaluations();
     private:
         FormulaSolver(std::istream& input_stream, std::ostream& error_stream);
         std::istream& input_stream;
@@ -37,16 +38,15 @@ namespace formula_solver {
         Parser parser;
 
         bool is_evaluation_mode = false;
-        double formula_evaluation_result;
-        std::unordered_map<char, double> variable_evaluations;
+        int formula_evaluation_result;
+        std::unordered_map<char, int> variables_evaluation;
 
-        double add_func(double a, double b);
         int number_of_true_logical_values;
-
         void parse_and_reset();
         void reset_input();
-        void generate_combinations(int number_of_logical_values, std::vector<double>& current_values, std::set<std::map<char, double>>& result);
-        std::set<std::map<char, double>> generate_variable_evaluations(int number_of_logical_values);
+        TruthTable generate_truth_table(int index) const;
+
+        std::vector<char> get_variable_names();
     };
 }
 

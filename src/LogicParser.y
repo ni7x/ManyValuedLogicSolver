@@ -58,11 +58,11 @@ formula:
       VARIABLE { $$ = solver->get_variable_value($1); }
     | NUMBER { $$ = $1; }
     | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
-    | NOT formula { $$ = 1.0 - $2; }
-    | formula AND formula { $$ = fmin($1, $3); }
-    | formula OR formula { $$ = fmax($1, $3); }
-    | formula IMPLICATION formula { $$ = fmax(1.0 - $1, $3); }
-    | formula EQUIVALENCE formula { $$ = fmin(fmax(1.0 - $1, $3), fmax(1.0 - $3, $1)); }
+    | NOT formula { $$ = (solver->number_of_logical_values - 1) - $2; }
+    | formula AND formula {  $$ =  solver->logical_operators[0][$1][$3]; }
+    | formula OR formula { $$ = solver->logical_operators[1][$1][$3]; }
+    | formula IMPLICATION formula { $$ = solver->logical_operators[2][$1][$3]; }
+    | formula EQUIVALENCE formula { $$ = solver->logical_operators[3][$1][$3]; }
     ;
 
 %%

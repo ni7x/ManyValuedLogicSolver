@@ -7,12 +7,12 @@
 #include "LogicalOperator.h"
 class TruthTable {
 public:
-    TruthTable(LogicalOperator logical_operator, int num_of_variables)
-            : logical_operator(logical_operator), num_of_variables(num_of_variables) {
-        if (num_of_variables <= 0) {
-            throw std::invalid_argument("Number of variables must be positive.");
+    TruthTable(int num_of_logical_values)
+            : num_of_logical_values(num_of_logical_values) {
+        if (num_of_logical_values <= 0) {
+            throw std::invalid_argument("");
         }
-        int num_elements = (num_of_variables * (num_of_variables + 1)) / 2; // 1 + 2 + ... + n -> suma ciagu artmetyczngo
+        int num_elements = (num_of_logical_values * (num_of_logical_values + 1)) / 2; // 1 + 2 + ... + n -> suma ciagu artmetyczngo
         cells.resize(num_elements, 0);
     }
 
@@ -33,7 +33,7 @@ public:
     };
 
     RowProxy operator[](int row) {
-        if (row < 0 || row >= num_of_variables) {
+        if (row < 0 || row >= num_of_logical_values) {
             throw std::out_of_range("Row index out of range.");
         }
         return RowProxy(*this, row);
@@ -46,27 +46,28 @@ public:
         cells = values;
     }
 
-    void print() {
 
-        std::cout << logical_operator << "\t";
-        for (int i = 0; i < num_of_variables; i++) {
-            std::cout << i << "\t";
+
+    friend std::ostream& operator<<(std::ostream& os,  TruthTable& table) {
+        os << "" << "\t";
+        for (int i = 0; i < table.num_of_logical_values; i++) {
+            os << i << "\t";
         }
-        std::cout << std::endl;
+        os << std::endl;
 
-        for (int i = 0; i < num_of_variables; i++) {
-            std::cout << i << "\t";
-
-            for (int j = 0; j < num_of_variables; j++) {
-                std::cout << (*this)[i][j] << "\t";
+        for (int i = 0; i < table.num_of_logical_values; i++) {
+            os << i << "\t";
+            for (int j = 0; j < table.num_of_logical_values; j++) {
+                os << table[i][j] << "\t";
             }
-            std::cout << std::endl;
+            os << std::endl;
         }
+        return os;
     }
 
 private:
-    int num_of_variables;
-    LogicalOperator logical_operator;
+    int num_of_logical_values;
+   // LogicalOperator logical_operator;
     std::vector<double> cells;
 
 
