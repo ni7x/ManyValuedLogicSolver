@@ -21,6 +21,7 @@ namespace formula_solver {
 
         FormulaEvaluator(std::istream &input_stream, std::ostream &error_stream, int n, int k);
 
+
         int evaluate_formula(const std::vector<int>& new_variable_evaluations, std::vector<BinaryTruthTable> logical_operators);
 
         int get_variable_value(char variable);
@@ -42,6 +43,8 @@ namespace formula_solver {
         int formula_evaluation_result;
         std::vector<int> variable_evaluations;
         std::list<char> variable_names;
+        std::unordered_map<char, int> variable_index_map;
+
 
         bool is_formula_valid();
         void add_variable_name(char variable_name);

@@ -21,6 +21,10 @@ namespace formula_solver {
         }else{
             variable_names.sort();
             variable_evaluations.resize(variable_names.size());
+            int index = 0;
+            for (const auto& variable : variable_names) {
+                variable_index_map[variable] = index++;
+            }
             std::cout << "--------FORMULA IS CORRECT-------" << std::endl<< std::endl;;
         }
     }
@@ -63,8 +67,7 @@ namespace formula_solver {
         if (is_evaluation_mode) {
             auto it = std::find(variable_names.begin(), variable_names.end(), variable);
             if (it != variable_names.end()) {
-                int index = std::distance(variable_names.begin(), it);
-                return variable_evaluations[index];
+                return variable_evaluations[variable_index_map[variable]];
             } else {
                 throw std::runtime_error("Variable not found in evaluations.");
             }
@@ -81,6 +84,5 @@ namespace formula_solver {
     void FormulaEvaluator::set_variables(const std::vector<int>& new_variable_evaluations) {
         variable_evaluations = new_variable_evaluations;
     }
-
 
 }

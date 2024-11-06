@@ -18,7 +18,7 @@ namespace formula_solver {
     public:
         FormulaSolver(std::istream &input_stream, std::ostream &error_stream, int n, int k);
         void find_all_tautological_logical_operators();
-        FormulaEvaluator parser;
+        FormulaEvaluator evaluator;
     private:
         std::vector<std::vector<int>> generate_all_variables_evaluations() const;
         std::vector<BinaryTruthTable> generate_all_truth_tables() const;

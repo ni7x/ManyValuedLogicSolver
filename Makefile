@@ -18,7 +18,8 @@ $(GENERATED_DIR)/$(PARSER).yy.c: $(SRC_DIR)/$(PARSER).l $(GENERATED_DIR)/$(PARSE
 	win_flex -o$(GENERATED_DIR)/$(PARSER).yy.c $(SRC_DIR)/$(PARSER).l
 
 $(GENERATED_DIR)/$(EXEC): $(GENERATED_DIR)/$(PARSER).yy.c $(GENERATED_DIR)/$(PARSER).tab.c $(GENERATED_DIR)/$(PARSER).tab.h
-	g++ -o $(EXEC) $(GENERATED_DIR)/$(PARSER).tab.c $(GENERATED_DIR)/$(PARSER).yy.c $(SRC_DIR)/FormulaSolver.cpp $(SRC_DIR)/FormulaEvaluator.cpp ${MAIN_FILE} -I./$(SRC_DIR)
+	g++  -o $(EXEC) $(GENERATED_DIR)/$(PARSER).tab.c $(GENERATED_DIR)/$(PARSER).yy.c $(SRC_DIR)/FormulaSolver.cpp $(SRC_DIR)/FormulaEvaluator.cpp ${MAIN_FILE} -I./$(SRC_DIR)
+
 
 clean:
 	rm -rf $(GENERATED_DIR_WIN)
