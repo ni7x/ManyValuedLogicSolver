@@ -19,9 +19,10 @@ file(GLOB HEADERS "${SRC_DIR}/*.h")
 
 # Add all header and source files to the executable target
 add_executable(MyExecutable ${SOURCES} ${HEADERS}
-        src/TruthTable.h
-        src/f.cpp
-        src/LogicalOperator.h)
+        src/BinaryTruthTable.h
+        src/LogicalOperator.h
+        src/FormulaEvaluator.cpp
+        src/FormulaEvaluator.h)
 
 # Optionally, add include directories if needed
 target_include_directories(MyExecutable PRIVATE ${SRC_DIR})

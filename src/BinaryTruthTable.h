@@ -1,13 +1,13 @@
-#ifndef TRUTHTABLE_H
-#define TRUTHTABLE_H
+#ifndef BINARYTRUTHTABLE_H
+#define BINARYTRUTHTABLE_H
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
 #include "LogicalOperator.h"
-class TruthTable {
+class BinaryTruthTable {
 public:
-    TruthTable(int num_of_logical_values)
+    BinaryTruthTable(int num_of_logical_values)
             : num_of_logical_values(num_of_logical_values) {
         if (num_of_logical_values <= 0) {
             throw std::invalid_argument("");
@@ -18,7 +18,7 @@ public:
 
     class RowProxy {
     public:
-        RowProxy(TruthTable& parent, int row) : parent(parent), row(row) {}
+        RowProxy(BinaryTruthTable& parent, int row) : parent(parent), row(row) {}
 
         double& operator[](int col) {
             if (row < col) {
@@ -28,7 +28,7 @@ public:
         }
 
     private:
-        TruthTable& parent;
+        BinaryTruthTable& parent;
         int row;
     };
 
@@ -48,7 +48,7 @@ public:
 
 
 
-    friend std::ostream& operator<<(std::ostream& os,  TruthTable& table) {
+    friend std::ostream& operator<<(std::ostream& os, BinaryTruthTable& table) {
         os << "" << "\t";
         for (int i = 0; i < table.num_of_logical_values; i++) {
             os << i << "\t";
@@ -76,4 +76,4 @@ private:
     }
 };
 
-#endif // TRUTHTABLE_H
+#endif // BINARYTRUTHTABLE_H

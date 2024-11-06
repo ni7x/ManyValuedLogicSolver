@@ -9,7 +9,7 @@
 #include "FlexLexer.h"
 #endif
 
-#include "generated_files/LogicParser.tab.h"
+#include "generated_files/FormulaParser.tab.h"
 
 
 namespace formula_solver {
