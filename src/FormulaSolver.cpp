@@ -84,7 +84,7 @@ namespace formula_solver {
         std::cout << std::pow(num_of_truth_table_combinations, 4) << " total 4 operator combinations" << std::endl;
 
         std::vector<BinaryTruthTable> truth_tables = generate_all_truth_tables();
-
+        int taut = 0;
 
         for (int i = num_of_truth_table_combinations - 1; i >= 0; --i) {
             for (int j = num_of_truth_table_combinations - 1; j >= 0; --j) {
@@ -123,11 +123,13 @@ namespace formula_solver {
                             std::cout << implication_operator << std::endl;
                             std::cout << "EQUIVALENCE" << std::endl;
                             std::cout << equivalence_operator << std::endl;
+                            taut ++ ;
                         }
                     }
                 }
             }
         }
+        std::cout << std::endl << "taut count " << taut << std::endl;
     }
 
 }
