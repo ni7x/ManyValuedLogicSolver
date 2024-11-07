@@ -35,8 +35,19 @@ int main(int argc, char *argv[]) {
     formula_solver::FormulaSolver solver(input_formula, std::cerr, n, k);
     std::ofstream output_file("output.txt");
 
-    solver.find_all_tautological_logical_operators();
+   solver.find_all_tautological_logical_operators();
+/*formula_solver::FormulaParserParams params("a | b => c");
 
+    // Set up logical operators and variable evaluations for params
+    params.logical_operators = {
+            BinaryTruthTable(3),  // AND operator
+            BinaryTruthTable(3),  // OR operator
+            BinaryTruthTable(3),  // IMPLICATION operator
+            BinaryTruthTable(3)   // EQUIVALENCE operator
+    };
+
+    params.evaluations = {{'a', 1}, {'b', 0}, {'c', 1}};
+   std::cout <<  solver.parse_with_params(params);*/
     output_file.close();
 }
 

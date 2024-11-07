@@ -10,13 +10,13 @@
 %code requires {
     namespace formula_solver {
         class Scanner;
-        class FormulaEvaluator;
+        class FormulaParserParams;
     }
 }
 
 %code top {
     #include "Scanner.h"
-    #include "FormulaEvaluator.h"
+    #include "FormulaParserParams.h"
 
 #define yylex(x) scanner->lex(x)
 }
@@ -28,7 +28,7 @@
 %define api.namespace {formula_solver}
 %define api.value.type variant
 %parse-param {Scanner* scanner}
-%parse-param {FormulaEvaluator* parser}
+%parse-param {FormulaParserParams* params}
 
 
 %token<int> NUMBER
@@ -54,17 +54,17 @@
 %start logical_expression
 
 %%
-logical_expression: formula {$$ = $1; parser->set_formula_evaluation_result($1);}
+logical_expression: formula {$$ = $1; params->evaluation_result = $1;}
 
 formula:
-      VARIABLE { $$ = parser->get_variable_value($1); }
+      VARIABLE { $$ = params->evaluations[$1]; }
     | NUMBER { $$ = $1; }
     | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
     | NOT formula { $$ = 0; }
-    | formula AND formula {  $$ =  parser->logical_operators[0][$1][$3]; }
-    | formula OR formula { $$ = parser->logical_operators[1][$1][$3]; }
-    | formula IMPLICATION formula { $$ = parser->logical_operators[2][$1][$3]; }
-    | formula EQUIVALENCE formula { $$ = parser->logical_operators[3][$1][$3]; }
+    | formula AND formula {  $$ =  params->logical_operators[0][$1][$3]; }
+    | formula OR formula { $$ = params->logical_operators[1][$1][$3]; }
+    | formula IMPLICATION formula { $$ = params->logical_operators[2][$1][$3]; }
+    | formula EQUIVALENCE formula { $$ = params->logical_operators[3][$1][$3]; }
     ;
 
 %%

@@ -1,12 +1,13 @@
 #include "FormulaEvaluator.h"
+#include "FormulaParserParams.h"
 
 namespace formula_solver {
 
 
 
     FormulaEvaluator::FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream)
-            : input_stream(input_stream), error_stream(error_stream),
-              scanner(&input_stream, &error_stream), parser(&scanner, this){
+            : input_stream(input_stream), error_stream(error_stream)
+              {
 
     }
 
@@ -19,14 +20,19 @@ namespace formula_solver {
         if(!is_formula_valid()){
             throw std::runtime_error("Formula is invalid. Couldn't create Formula Solver.");
         }else{
-            variable_names.sort();
-            variable_evaluations.resize(variable_names.size());
-            int index = 0;
-            for (const auto& variable : variable_names) {
-                variable_index_map[variable] = index++;
-            }
             std::cout << "--------FORMULA IS CORRECT-------" << std::endl<< std::endl;;
         }
+    }
+
+    int FormulaEvaluator::parse_with_params(FormulaParserParams params){
+        std::istringstream input_formula(params.formula);
+        Scanner s(input_formula, std::cerr);
+
+        Parser p(&s, &params);
+        p.parse();
+        input_formula.clear();
+        input_formula.seekg(0, std::ios::beg);
+        return params.evaluation_result;
     }
 
     void FormulaEvaluator::reset_input() {
@@ -35,7 +41,7 @@ namespace formula_solver {
     }
 
     void FormulaEvaluator::parse_and_reset(){
-        parser.parse();
+
         reset_input();
     }
 
@@ -52,22 +58,16 @@ namespace formula_solver {
 
 
     void FormulaEvaluator::add_variable_name(char variable_name) {
-        variable_names.push_back(variable_name);
+        variable_evaluations[variable_name] = 0;
     }
 
-    int FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::vector<BinaryTruthTable> new_logical_operators) {
-        is_evaluation_mode = true;
-        this->logical_operators = new_logical_operators;
-        set_variables(new_variable_evaluations);
-        parse_and_reset();
-        return formula_evaluation_result;
-    }
+
 
     int FormulaEvaluator::get_variable_value(char variable) {
         if (is_evaluation_mode) {
-            auto it = std::find(variable_names.begin(), variable_names.end(), variable);
-            if (it != variable_names.end()) {
-                return variable_evaluations[variable_index_map[variable]];
+            auto it = variable_evaluations.find(variable);
+            if (it != variable_evaluations.end()) {
+                return it->second;
             } else {
                 throw std::runtime_error("Variable not found in evaluations.");
             }
@@ -81,7 +81,7 @@ namespace formula_solver {
         formula_evaluation_result = result;
     }
 
-    void FormulaEvaluator::set_variables(const std::vector<int>& new_variable_evaluations) {
+    void FormulaEvaluator::set_variables(const std::map<char, int>& new_variable_evaluations) {
         variable_evaluations = new_variable_evaluations;
     }
 
