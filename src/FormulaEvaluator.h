@@ -19,7 +19,7 @@ namespace formula_solver {
     class FormulaEvaluator {
     public:
 
-        FormulaEvaluator(std::istream &input_stream, std::ostream &error_stream, int n, int k);
+        FormulaEvaluator(std::string &input_formula, std::ostream &error_stream, int n, int k);
 
 
 
@@ -31,12 +31,12 @@ namespace formula_solver {
         std::vector<BinaryTruthTable> logical_operators;
         std::vector<int> not_operator; //for now
     private:
-        FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream);
+        FormulaEvaluator(std::string& input_formula, std::ostream& error_stream);
 
         int number_of_true_logical_values;
         int number_of_logical_values;
-        std::istream& input_stream;
         std::ostream& error_stream;
+        std::string formula_string;
 
         bool is_evaluation_mode = false;
         int formula_evaluation_result;

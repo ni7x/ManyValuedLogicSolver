@@ -5,13 +5,13 @@ namespace formula_solver {
 
 
 
-    FormulaEvaluator::FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream)
-            : input_stream(input_stream), error_stream(error_stream)
+    FormulaEvaluator::FormulaEvaluator(std::string& formula_string, std::ostream& error_stream)
+            : formula_string(formula_string), error_stream(error_stream)
               {
 
     }
 
-    FormulaEvaluator::FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream,
+    FormulaEvaluator::FormulaEvaluator(std::string & input_stream, std::ostream& error_stream,
                                        int n, int k)
             : FormulaEvaluator(input_stream, error_stream) {
         number_of_logical_values = n;
@@ -25,19 +25,16 @@ namespace formula_solver {
     }
 
     int FormulaEvaluator::parse_with_params(FormulaParserParams params){
-        std::istringstream input_formula(params.formula);
-        Scanner s(input_formula, std::cerr);
-
+        std::istringstream input_stream(params.formula);
+        Scanner s(input_stream, std::cerr);
         Parser p(&s, &params);
         p.parse();
-        input_formula.clear();
-        input_formula.seekg(0, std::ios::beg);
         return params.evaluation_result;
     }
 
     void FormulaEvaluator::reset_input() {
-        input_stream.clear();
-        input_stream.seekg(0, std::ios::beg);
+        /*input_stream.clear();
+        input_stream.seekg(0, std::ios::beg);*/
     }
 
     void FormulaEvaluator::parse_and_reset(){

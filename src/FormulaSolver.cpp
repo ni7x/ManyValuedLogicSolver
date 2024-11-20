@@ -9,20 +9,8 @@
 
 namespace formula_solver {
 
-    FormulaSolver::FormulaSolver(std::istream &input_stream, std::ostream &error_stream, int n, int k)
+    FormulaSolver::FormulaSolver(std::string &input_stream, std::ostream &error_stream, int n, int k)
             : evaluator(input_stream, error_stream, n, k) {}
-
-    int FormulaSolver::parse_with_params(FormulaParserParams params){
-        std::istringstream input_formula(params.formula);
-
-        Scanner s(input_formula, std::cerr);
-
-        Parser p(&s, &params);
-
-        p.parse();
-
-        return params.evaluation_result;
-    }
 
 
     std::vector<int> generate_last_k_values(int n, int k) {
@@ -118,13 +106,13 @@ namespace formula_solver {
                                                                        equivalence_operator};
 
             bool is_tautology = true;
-            formula_solver::FormulaParserParams params("a | b => c");
+            formula_solver::FormulaParserParams params("a|b");
 
             for (const auto &evaluation: all_possible_evaluations) {
                 params.logical_operators = current_logical_operators;
                 params.evaluations = evaluation;
 
-                int formula_result = parse_with_params(params);
+                int formula_result = evaluator.parse_with_params(params);
 
                 if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
                     true_values_in_logic.end()) {
