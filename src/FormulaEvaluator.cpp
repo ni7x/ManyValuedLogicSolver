@@ -25,13 +25,12 @@ namespace formula_solver {
     }
 
     int FormulaEvaluator::parse_with_params(FormulaParserParams params){
-        std::istringstream input_formula(params.formula);
-        Scanner s(input_formula, std::cerr);
+        Scanner s(input_stream, std::cerr);
 
         Parser p(&s, &params);
         p.parse();
-        input_formula.clear();
-        input_formula.seekg(0, std::ios::beg);
+        input_stream.clear();
+        input_stream.seekg(0, std::ios::beg);
         return params.evaluation_result;
     }
 

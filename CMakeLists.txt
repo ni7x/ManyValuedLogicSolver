@@ -23,7 +23,8 @@ add_executable(MyExecutable ${SOURCES} ${HEADERS}
         src/LogicalOperator.h
         src/FormulaEvaluator.cpp
         src/FormulaEvaluator.h
-        src/FormulaParserParams.h)
+        src/FormulaParserParams.h
+        src/ParserContext.h)
 
 # Optionally, add include directories if needed
 target_include_directories(MyExecutable PRIVATE ${SRC_DIR})

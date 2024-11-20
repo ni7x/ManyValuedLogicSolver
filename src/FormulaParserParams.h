@@ -12,9 +12,8 @@ namespace formula_solver {
         std::vector<BinaryTruthTable> logical_operators;
         std::unordered_map<char, int> evaluations;
         int evaluation_result;
-        std::string formula;
-        FormulaParserParams(const std::string& formula)
-                :  evaluation_result(0), formula(formula) {}
+        FormulaParserParams()
+                :  evaluation_result(0) {}
     };
 }
 #endif //FORMULAPARSERPARAMS_H

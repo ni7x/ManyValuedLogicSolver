@@ -1,6 +1,7 @@
 #include "FormulaSolver.h"
 #include "FormulaEvaluator.h"
 #include "FormulaParserParams.h"
+#include "ParserContext.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -13,15 +14,9 @@ namespace formula_solver {
             : evaluator(input_stream, error_stream, n, k) {}
 
     int FormulaSolver::parse_with_params(FormulaParserParams params){
-        std::istringstream input_formula(params.formula);
 
-        Scanner s(input_formula, std::cerr);
-
-        Parser p(&s, &params);
-
-        p.parse();
-
-        return params.evaluation_result;
+        return 0
+        ;
     }
 
 
@@ -117,14 +112,16 @@ namespace formula_solver {
                                                                        implication_operator,
                                                                        equivalence_operator};
 
+
+            FormulaParserParams params;
+            params.logical_operators = current_logical_operators;
             bool is_tautology = true;
-            formula_solver::FormulaParserParams params("a | b => c");
 
-            for (const auto &evaluation: all_possible_evaluations) {
-                params.logical_operators = current_logical_operators;
-                params.evaluations = evaluation;
+            for (const auto& evaluation : all_possible_evaluations) {
+                ParserContext context("a|b", params);
 
-                int formula_result = parse_with_params(params);
+                context.update_evaluations(evaluation);
+                int formula_result = context.evaluate();
 
                 if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
                     true_values_in_logic.end()) {
@@ -157,7 +154,7 @@ namespace formula_solver {
                 for (int k = num_of_truth_table_combinations - 1; k >= 0; --k) {
                     for (int l = num_of_truth_table_combinations - 1; l >= 0; --l) {
 
-                        threads.push_back(std::thread(check_combination, i, j, k, l));
+                        threads.emplace_back(check_combination, i, j, k, l);
                     }
                 }
             }
