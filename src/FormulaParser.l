@@ -23,8 +23,8 @@
 \n                      { return Parser::token::END_OF_LINE; }
 [ \t]                   { /* skip whitespace */ }
 .                       {   std::ostringstream oss;
-                            oss << "Error: Unrecognized character '" << yytext << "'\n";
-                            throw std::runtime_error(oss.str());
+                            oss << "Lex Error: Unrecognized character '" << yytext << "'\n";
+                            throw std::runtime_error("Lex: " + oss.str());
                         }
 
 %%

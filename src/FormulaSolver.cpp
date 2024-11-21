@@ -87,6 +87,15 @@ namespace formula_solver {
         return truth_tables;
     }
 
+    std::istream& cloneStream(std::istream& input, std::stringstream& output) {
+        std::ostringstream tempBuffer;
+        tempBuffer << input.rdbuf();
+        output.str(tempBuffer.str());
+        input.clear();
+        input.seekg(0, std::ios::beg);
+        return output;
+    }
+
     void FormulaSolver::find_all_tautological_logical_operators() {
         auto all_possible_evaluations = generate_all_variables_evaluations();
         int num_of_truth_table_combinations = std::pow(evaluator.number_of_logical_values, (evaluator.number_of_logical_values * (evaluator.number_of_logical_values + 1)) / 2);
@@ -113,18 +122,23 @@ namespace formula_solver {
                                                                        equivalence_operator};
 
 
-            FormulaParserParams params;
-            params.logical_operators = current_logical_operators;
+
             bool is_tautology = true;
-
+            std::stringstream clonedStream;
+            cloneStream(evaluator.input_stream, clonedStream);
+            ParserContext context(clonedStream, current_logical_operators);
             for (const auto& evaluation : all_possible_evaluations) {
-                ParserContext context("a|b", params);
+                try {
+                    context.evaluations = evaluation;
+                    int formula_result = context.evaluate();
 
-                context.update_evaluations(evaluation);
-                int formula_result = context.evaluate();
-
-                if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
-                    true_values_in_logic.end()) {
+                    if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
+                        true_values_in_logic.end()) {
+                        is_tautology = false;
+                        break;
+                    }
+                } catch (const std::exception &ex) {
+                    std::cerr << "Error during evaluation: " << ex.what() << std::endl;
                     is_tautology = false;
                     break;
                 }

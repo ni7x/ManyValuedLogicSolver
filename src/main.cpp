@@ -7,7 +7,8 @@
 #include <chrono> 
 #include <iomanip> 
 #include <ctime>   
-#include <fstream> 
+#include <fstream>
+#include <thread>
 
 #include "Scanner.h"
 #include "FormulaSolver.h"
@@ -25,8 +26,7 @@ int main(int argc, char *argv[]) {
         std::cerr << "Error parsing arguments: " << e.what() << '\n';
         return 1;
     }
-
-
+    
     std::cout << "----------ENTER FORMULA----------" << std::endl;
 
     std::string input_line;
@@ -56,5 +56,5 @@ int yyFlexLexer::yylex() {
 }
 
 void formula_solver::Parser::error(const std::string& msg) {
-    throw std::runtime_error(msg);
+    throw std::runtime_error("PARSER ERROR" + msg);
 }

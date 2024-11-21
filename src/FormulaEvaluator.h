@@ -41,7 +41,6 @@ namespace formula_solver {
         bool is_evaluation_mode = false;
         int formula_evaluation_result;
         std::map<char, int> variable_evaluations = {{'a', 0}, {'b', 0}, {'c', 0}};
-        int parse_with_params(FormulaParserParams params);
 
 
         bool is_formula_valid();
