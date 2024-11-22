@@ -7,7 +7,7 @@
 #include <set>
 #include <vector>
 #include <unordered_map>
-#include "Scanner.h"
+#include "flex_bison/Scanner.h"
 #include <list>
 #include "BinaryTruthTable.h"
 #include <algorithm>

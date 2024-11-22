@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include "FlexLexer.h"
+#include "flex_bison/FlexLexer.h"
 #include <unordered_map>
 
 %}
@@ -16,7 +16,7 @@
 
 %code top {
     #include "Scanner.h"
-    #include "FormulaEvaluator.h"
+    #include "include/FormulaEvaluator.h"
 
 #define yylex(x) scanner->lex(x)
 }

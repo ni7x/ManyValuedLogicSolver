@@ -22,8 +22,8 @@ add_executable(MyExecutable ${SOURCES} ${HEADERS}
         src/BinaryTruthTable.h
         src/LogicalOperator.h
         src/FormulaEvaluator.cpp
-        src/FormulaEvaluator.h
-        src/FormulaParserParams.h)
+        src/include/FormulaEvaluator.h
+        src/include/FormulaParserParams.h)
 
 # Optionally, add include directories if needed
 target_include_directories(MyExecutable PRIVATE ${SRC_DIR})

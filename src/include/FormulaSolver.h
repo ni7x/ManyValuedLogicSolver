@@ -7,10 +7,10 @@
 #include <set>
 #include <vector>
 #include <unordered_map>
-#include "Scanner.h"
+#include "flex_bison/Scanner.h"
 #include <list>
 #include "BinaryTruthTable.h"
-#include "FormulaEvaluator.h"
+#include "include/FormulaEvaluator.h"
 
 namespace formula_solver {
 

@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <unordered_map>
 #if !defined(yyFlexLexerOnce)
-#include "FlexLexer.h"
+#include "flex_bison/FlexLexer.h"
 #endif
 
 #include "generated_files/FormulaParser.tab.h"

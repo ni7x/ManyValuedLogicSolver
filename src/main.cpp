@@ -9,8 +9,8 @@
 #include <ctime>   
 #include <fstream> 
 
-#include "Scanner.h"
-#include "FormulaSolver.h"
+#include "flex_bison/Scanner.h"
+#include "include/FormulaSolver.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
