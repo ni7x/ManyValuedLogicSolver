@@ -8,7 +8,6 @@ namespace formula_solver {
     FormulaEvaluator::FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream)
             : input_stream(input_stream), error_stream(error_stream)
               {
-
     }
 
     FormulaEvaluator::FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream,
@@ -31,7 +30,8 @@ namespace formula_solver {
     }
 
     void FormulaEvaluator::parse_and_reset(){
-
+        ParserContext c(input_stream)
+        
         reset_input();
     }
 

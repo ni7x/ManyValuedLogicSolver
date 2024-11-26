@@ -107,80 +107,61 @@ namespace formula_solver {
 
         std::vector<BinaryTruthTable> truth_tables = generate_all_truth_tables();
 
-        std::mutex output_mutex;
-        std::atomic<int> found_tautologies(0);
 
-        auto check_combination = [&](int i, int j, int k, int l) {
-            BinaryTruthTable and_operator = truth_tables[i];
-            BinaryTruthTable or_operator = truth_tables[j];
-            BinaryTruthTable implication_operator = truth_tables[k];
-            BinaryTruthTable equivalence_operator = truth_tables[l];
-
-            std::vector<BinaryTruthTable> current_logical_operators = {and_operator,
-                                                                       or_operator,
-                                                                       implication_operator,
-                                                                       equivalence_operator};
-
-
-
-            bool is_tautology = true;
-            std::stringstream clonedStream;
-            cloneStream(evaluator.input_stream, clonedStream);
-            ParserContext context(clonedStream, current_logical_operators);
-            for (const auto& evaluation : all_possible_evaluations) {
-                try {
-                    context.evaluations = evaluation;
-                    int formula_result = context.evaluate();
-
-                    if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
-                        true_values_in_logic.end()) {
-                        is_tautology = false;
-                        break;
-                    }
-                } catch (const std::exception &ex) {
-                    std::cerr << "Error during evaluation: " << ex.what() << std::endl;
-                    is_tautology = false;
-                    break;
-                }
-            }
-
-            if (is_tautology) {
-                std::lock_guard<std::mutex> lock(output_mutex);
-                std::cout << "Tautology found with combination: " << i << ", " << j << ", " << k << ", " << l << std::endl;
-                std::cout << "AND" << std::endl;
-                std::cout << and_operator << std::endl;
-                std::cout << "OR" << std::endl;
-                std::cout << or_operator << std::endl;
-                std::cout << "IMPLICATION" << std::endl;
-                std::cout << implication_operator << std::endl;
-                std::cout << "EQUIVALENCE" << std::endl;
-                std::cout << equivalence_operator << std::endl;
-                found_tautologies++;
-            }
-        };
-
-
-        std::vector<std::thread> threads;
-
+        ParserContext context(evaluator.input_stream);
 
         for (int i = num_of_truth_table_combinations - 1; i >= 0; --i) {
             for (int j = num_of_truth_table_combinations - 1; j >= 0; --j) {
                 for (int k = num_of_truth_table_combinations - 1; k >= 0; --k) {
                     for (int l = num_of_truth_table_combinations - 1; l >= 0; --l) {
 
-                        threads.emplace_back(check_combination, i, j, k, l);
+                        BinaryTruthTable and_operator = truth_tables[i];
+                        BinaryTruthTable or_operator = truth_tables[j];
+                        BinaryTruthTable implication_operator = truth_tables[k];
+                        BinaryTruthTable equivalence_operator = truth_tables[l];
+
+                        std::vector<BinaryTruthTable> current_logical_operators = {and_operator,
+                                                                                   or_operator,
+                                                                                   implication_operator,
+                                                                                   equivalence_operator};
+
+
+
+                        bool is_tautology = true;
+                        context.logical_operators = current_logical_operators;
+                        for (const auto& evaluation : all_possible_evaluations) {
+                            try {
+                                context.evaluations = evaluation;
+                                int formula_result = context.evaluate();
+
+                                if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
+                                    true_values_in_logic.end()) {
+                                    is_tautology = false;
+                                    break;
+                                }
+                            } catch (const std::exception &ex) {
+                                std::cerr << "Error during evaluation: " << ex.what() << std::endl;
+                                is_tautology = false;
+                                break;
+                            }
+                        }
+
+                        if (is_tautology) {
+                            std::cout << "Tautology found with combination: " << i << ", " << j << ", " << k << ", " << l << std::endl;
+                            std::cout << "AND" << std::endl;
+                            std::cout << and_operator << std::endl;
+                            std::cout << "OR" << std::endl;
+                            std::cout << or_operator << std::endl;
+                            std::cout << "IMPLICATION" << std::endl;
+                            std::cout << implication_operator << std::endl;
+                            std::cout << "EQUIVALENCE" << std::endl;
+                            std::cout << equivalence_operator << std::endl;
+                        }
+                    };
                     }
                 }
             }
-        }
 
-
-        for (auto& t : threads) {
-            t.join();
-        }
-
-
-        std::cout << "Total tautologies found: " << found_tautologies.load() << std::endl;
     }
 
 }

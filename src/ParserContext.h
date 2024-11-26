@@ -18,17 +18,15 @@ namespace formula_solver {
         std::unordered_map<char, int> evaluations;
         int evaluation_result;
 
-        ParserContext(std::istream& input,std::vector<BinaryTruthTable> logical_operators )
+        ParserContext(std::istream& input)
                 : input_stream(input),
                   scanner(input, std::cerr),
                   parser(&scanner, this),
-                  logical_operators(logical_operators),
                   evaluation_result(0){
         }
 
         int evaluate() {
             parser.parse();
-
             input_stream.clear();
             input_stream.seekg(0, std::ios::beg);
             return evaluation_result;

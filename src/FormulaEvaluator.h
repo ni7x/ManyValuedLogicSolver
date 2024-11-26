@@ -20,13 +20,8 @@ namespace formula_solver {
     public:
 
         FormulaEvaluator(std::istream &input_stream, std::ostream &error_stream, int n, int k);
-
-
-
         int get_variable_value(char variable);
         void set_variables(const std::map<char, int>& new_variable_evaluations);
-
-
         void set_formula_evaluation_result(int result);
         std::vector<BinaryTruthTable> logical_operators;
         std::vector<int> not_operator; //for now
@@ -40,7 +35,7 @@ namespace formula_solver {
 
         bool is_evaluation_mode = false;
         int formula_evaluation_result;
-        std::map<char, int> variable_evaluations = {{'a', 0}, {'b', 0}, {'c', 0}};
+        std::map<char, int> variable_evaluations;
 
 
         bool is_formula_valid();
