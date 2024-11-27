@@ -10,7 +10,8 @@
 #endif
 
 #include "generated_files/FormulaParser.tab.h"
-
+#include "LogicalOperator.h"
+#include <set>
 
 namespace formula_solver {
 
@@ -26,6 +27,7 @@ public:
         : yyFlexLexer(input_stream, arg_yyout), input_stream(input) {}
 
     int lex(Parser::semantic_type *yylval);
+    std::set<LogicalOperator> used_operators;
 
 private:
     std::istringstream input_stream;

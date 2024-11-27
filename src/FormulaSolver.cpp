@@ -20,6 +20,30 @@ namespace formula_solver {
         return last_k_values;
     }
 
+    std::vector<UnaryTruthTable> FormulaSolver::generate_all_unary_truth_tables() const {
+        int num_elements = evaluator.number_of_logical_values;
+        std::vector<UnaryTruthTable> truth_tables;
+
+        auto total_combinations = static_cast<int>(std::pow(evaluator.number_of_logical_values, num_elements));
+
+        for (int index = 0; index < total_combinations; index++) {
+            std::vector<int> cell_values(num_elements, 0);
+
+            int temp_index = index;
+            for (int position = 0; position < num_elements; position++) {
+                cell_values[position] = temp_index % evaluator.number_of_logical_values;
+                temp_index /= evaluator.number_of_logical_values;
+            }
+
+            UnaryTruthTable table(evaluator.number_of_logical_values);
+            table = cell_values;
+            truth_tables.push_back(table);
+        }
+
+        return truth_tables;
+    }
+
+
 
     std::vector<std::vector<int>> FormulaSolver::generate_all_variables_evaluations() const {
         std::vector<std::vector<int>> evaluations;
@@ -46,88 +70,89 @@ namespace formula_solver {
 
 
     std::vector<BinaryTruthTable> FormulaSolver::generate_all_truth_tables() const {
-        int num_elements = (evaluator.number_of_logical_values * (evaluator.number_of_logical_values + 1)) / 2;
+        int num_elements = evaluator.number_of_logical_values * evaluator.number_of_logical_values;
         std::vector<BinaryTruthTable> truth_tables;
 
-        auto total_combinations = std::pow(evaluator.number_of_logical_values, num_elements);
+        auto total_combinations = static_cast<int>(std::pow(evaluator.number_of_logical_values, num_elements));
 
         for (int index = 0; index < total_combinations; index++) {
-            BinaryTruthTable table(evaluator.number_of_logical_values);
-            std::vector<double> cell_values(num_elements, 0);
+            std::vector<int> cell_values(num_elements, 0);
 
-            for (int i = 0; i < index; ++i) {
-                for (int position = 0; position < num_elements; position++) {
-                    cell_values[position]++;
-
-                    if (cell_values[position] < evaluator.number_of_logical_values) {
-                        break;
-                    }
-
-                    cell_values[position] = 0;
-                }
+            int temp_index = index;
+            for (int position = 0; position < num_elements; position++) {
+                cell_values[position] = temp_index % evaluator.number_of_logical_values;
+                temp_index /= evaluator.number_of_logical_values;
             }
 
-            table.set_cells(cell_values);
+            BinaryTruthTable table(evaluator.number_of_logical_values);
+            table  = cell_values;
             truth_tables.push_back(table);
         }
 
         return truth_tables;
     }
 
+
     void FormulaSolver::find_all_tautological_logical_operators() {
         auto all_possible_evaluations = generate_all_variables_evaluations();
-        int num_of_truth_table_combinations = std::pow(evaluator.number_of_logical_values, (evaluator.number_of_logical_values * (evaluator.number_of_logical_values + 1)) / 2);
+        int num_of_truth_table_combinations = std::pow(evaluator.number_of_logical_values,
+                                                       (evaluator.number_of_logical_values * evaluator.number_of_logical_values));
         std::vector<int> true_values_in_logic = generate_last_k_values(evaluator.number_of_logical_values, evaluator.number_of_true_logical_values);
 
-        std::cout << all_possible_evaluations.size() << " all possible evaluations " << std::endl;
-        std::cout << num_of_truth_table_combinations << " total two-argument truth tables for n-valued logic " << std::endl;
-        std::cout << std::pow(num_of_truth_table_combinations, 4) << " total 4 operator combinations" << std::endl;
+        std::cout << num_of_truth_table_combinations << " total two-argument truth tables for n-valued logic" << std::endl;
+        std::cout << std::pow(num_of_truth_table_combinations, evaluator.used_operators.size())
+                  << " total operator combinations for " << evaluator.used_operators.size() << " operators" << std::endl;
 
         std::vector<BinaryTruthTable> truth_tables = generate_all_truth_tables();
 
+        int num_used_operators = evaluator.used_operators.size();
+        std::vector<int> indices(num_used_operators, 0);
 
-        for (int i = num_of_truth_table_combinations - 1; i >= 0; --i) {
-            for (int j = num_of_truth_table_combinations - 1; j >= 0; --j) {
-                for (int k = num_of_truth_table_combinations - 1; k >= 0; --k) {
-                    for (int l = num_of_truth_table_combinations - 1; l >= 0; --l) {
-                        BinaryTruthTable and_operator = truth_tables[i];
-                        BinaryTruthTable or_operator = truth_tables[j];
-                        BinaryTruthTable implication_operator = truth_tables[k];
-                        BinaryTruthTable equivalence_operator = truth_tables[l];
+        while (true) {
+            std::map<LogicalOperator, BinaryTruthTable> current_logical_operators;
 
-                        std::vector<BinaryTruthTable> current_logical_operators = {and_operator,
-                                                                                   or_operator,
-                                                                                   implication_operator,
-                                                                                   equivalence_operator};
+            int i = 0;
+            for (auto logical_operator : evaluator.used_operators) {
+                current_logical_operators[logical_operator] = truth_tables[indices[i]];
+                i++;
+            }
 
-                        bool is_tautology = true;
+            bool is_tautology = true;
+            for (const auto& evaluation : all_possible_evaluations) {
+                int formula_result = evaluator.evaluate_formula(evaluation, current_logical_operators);
 
-                        for (const auto &evaluation: all_possible_evaluations) {
-                            int formula_result = evaluator.evaluate_formula(evaluation, current_logical_operators);
-
-                            if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
-                                true_values_in_logic.end()) {
-                                is_tautology = false;
-                                break;
-                            }
-                        }
-
-                        if (is_tautology) {
-                            std::cout << "Tautology found with combination: " << i << ", " << j << ", " << k << ", "
-                                      << l << std::endl;
-                            std::cout << "AND" << std::endl;
-                            std::cout << and_operator << std::endl;
-                            std::cout << "OR" << std::endl;
-                            std::cout << or_operator << std::endl;
-                            std::cout << "IMPLICATION" << std::endl;
-                            std::cout << implication_operator << std::endl;
-                            std::cout << "EQUIVALENCE" << std::endl;
-                            std::cout << equivalence_operator << std::endl;
-                        }
-                    }
+                if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
+                    true_values_in_logic.end()) {
+                    is_tautology = false;
+                    break;
                 }
             }
+
+            if (is_tautology) {
+                std::cout << "==================" << std::endl;
+                for (auto& [op, table] : current_logical_operators) {
+                    std::cout << "Operator " << op << std::endl;
+                    std::cout << table;
+                    std::cout << std::endl;
+                }
+            }
+
+            int position = num_used_operators - 1;
+            while (position >= 0) {
+                if (indices[position] < num_of_truth_table_combinations - 1) {
+                    ++indices[position];
+                    break;
+                } else {
+                    indices[position] = 0;
+                    --position;
+                }
+            }
+
+            if (position < 0) {
+                break;
+            }
         }
+
     }
 
 }

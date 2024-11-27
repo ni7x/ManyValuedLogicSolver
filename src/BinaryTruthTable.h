@@ -5,47 +5,55 @@
 #include <vector>
 #include <stdexcept>
 #include "LogicalOperator.h"
+#include "TruthTable.h"
+
 class BinaryTruthTable {
 public:
     BinaryTruthTable(int num_of_logical_values)
             : num_of_logical_values(num_of_logical_values) {
         if (num_of_logical_values <= 0) {
-            throw std::invalid_argument("");
+            throw std::invalid_argument("Number of logical values must be greater than zero.");
         }
-        int num_elements = (num_of_logical_values * (num_of_logical_values + 1)) / 2; // 1 + 2 + ... + n -> suma ciagu artmetyczngo
-        cells.resize(num_elements, 0);
+        cells.resize(num_of_logical_values, std::vector<int>(num_of_logical_values, 0));
     }
 
-    class RowProxy {
-    public:
-        RowProxy(BinaryTruthTable& parent, int row) : parent(parent), row(row) {}
+    BinaryTruthTable() : num_of_logical_values(0) {}
 
-        double& operator[](int col) {
-            if (row < col) {
-                return parent.cells[parent.index(col, row)];
+    std::vector<int>& operator[](int index) {
+        if (index < 0 || index >= num_of_logical_values) {
+            std::cout << " wrpmg " << index << std::endl;
+            throw std::out_of_range("Index outofbounds");
+        }
+        return cells[index];
+    }
+
+    BinaryTruthTable& operator=(const std::vector<std::vector<int>>& other) {
+        if (other.empty() || other.size() != other[0].size()) {
+            throw std::invalid_argument("Input vector must be square and non-empty.");
+        }
+
+        for (int i = 0; i < num_of_logical_values; ++i) {
+            for (int j = 0; j < num_of_logical_values; ++j) {
+                cells[i][j] = other[i][j];
             }
-            return parent.cells[parent.index(row, col)];
         }
 
-    private:
-        BinaryTruthTable& parent;
-        int row;
-    };
-
-    RowProxy operator[](int row) {
-        if (row < 0 || row >= num_of_logical_values) {
-            throw std::out_of_range("Row index out of range.");
-        }
-        return RowProxy(*this, row);
+        return *this;
     }
 
-    void set_cells(const std::vector<double>& values) {
-        if (values.size() != cells.size()) {
-            throw std::invalid_argument("Values size must match the number of lower triangle elements.");
+    BinaryTruthTable& operator=(const std::vector<int>& other){
+        int expected_size = num_of_logical_values * num_of_logical_values;
+        if (other.empty() || other.size() != expected_size) {
+            throw std::invalid_argument("Input vector must be square and non-empty.");
         }
-        cells = values;
-    }
 
+        for (int row = 0; row < num_of_logical_values; ++row) {
+            for (int col = 0; col < num_of_logical_values; ++col) {
+                cells[row][col] = other[row * num_of_logical_values + col];
+            }
+        }
+        return *this;
+    }
 
 
     friend std::ostream& operator<<(std::ostream& os, BinaryTruthTable& table) {
@@ -65,15 +73,10 @@ public:
         return os;
     }
 
-private:
+
+public:
     int num_of_logical_values;
-   // LogicalOperator logical_operator;
-    std::vector<double> cells;
-
-
-    int index(int row, int col) const {
-        return (row * (row + 1)) / 2 + col;
-    }
+    std::vector<std::vector<int>> cells;
 };
 
 #endif // BINARYTRUTHTABLE_H

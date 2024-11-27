@@ -61,10 +61,10 @@ formula:
     | NUMBER { $$ = $1; }
     | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
     | NOT formula { $$ = 0; }
-    | formula AND formula {  $$ =  parser->logical_operators[0][$1][$3]; }
-    | formula OR formula { $$ = parser->logical_operators[1][$1][$3]; }
-    | formula IMPLICATION formula { $$ = parser->logical_operators[2][$1][$3]; }
-    | formula EQUIVALENCE formula { $$ = parser->logical_operators[3][$1][$3]; }
+    | formula AND formula {  $$ =  parser->binary_logical_operators[LogicalOperator::AND][$1][$3]; }
+    | formula OR formula { $$ = parser->binary_logical_operators[LogicalOperator::OR][$1][$3]; }
+    | formula IMPLICATION formula { $$ = parser->binary_logical_operators[LogicalOperator::IMPLICATION][$1][$3]; }
+    | formula EQUIVALENCE formula { $$ = parser->binary_logical_operators[LogicalOperator::EQUIVALENCE][$1][$3]; }
     ;
 
 %%

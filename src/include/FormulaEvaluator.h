@@ -10,6 +10,7 @@
 #include "flex_bison/Scanner.h"
 #include <list>
 #include "BinaryTruthTable.h"
+#include "UnaryTruthTable.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -22,14 +23,15 @@ namespace formula_solver {
         FormulaEvaluator(std::istream &input_stream, std::ostream &error_stream, int n, int k);
 
 
-        int evaluate_formula(const std::vector<int>& new_variable_evaluations, std::vector<BinaryTruthTable> logical_operators);
+        int evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::map<LogicalOperator, BinaryTruthTable> logical_operators);
 
         int get_variable_value(char variable);
         void set_variables(const std::vector<int>& new_variable_evaluations);
 
         void set_formula_evaluation_result(int result);
-        std::vector<BinaryTruthTable> logical_operators;
-        std::vector<int> not_operator; //for now
+        std::map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
+        std::map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
+
     private:
         FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream);
 
@@ -44,7 +46,7 @@ namespace formula_solver {
         std::vector<int> variable_evaluations;
         std::list<char> variable_names;
         std::unordered_map<char, int> variable_index_map;
-
+        std::set<LogicalOperator> used_operators;
 
         bool is_formula_valid();
         void add_variable_name(char variable_name);

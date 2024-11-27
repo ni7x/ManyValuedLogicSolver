@@ -15,10 +15,18 @@ namespace formula_solver {
             : FormulaEvaluator(input_stream, error_stream) {
         number_of_logical_values = n;
         number_of_true_logical_values = k;
-        logical_operators.resize(4, BinaryTruthTable(n));
+
+        std::map<LogicalOperator, BinaryTruthTable> operator_map;
+
+        operator_map[LogicalOperator::AND] = BinaryTruthTable(n);
+        operator_map[LogicalOperator::OR] = BinaryTruthTable(n);
+        operator_map[LogicalOperator::IMPLICATION] = BinaryTruthTable(n);
+        operator_map[LogicalOperator::EQUIVALENCE] = BinaryTruthTable(n);
+        binary_logical_operators = operator_map;
         if(!is_formula_valid()){
             throw std::runtime_error("Formula is invalid. Couldn't create Formula Solver.");
         }else{
+            this->used_operators = scanner.used_operators;
             variable_names.sort();
             variable_evaluations.resize(variable_names.size());
             int index = 0;
@@ -35,6 +43,7 @@ namespace formula_solver {
     }
 
     void FormulaEvaluator::parse_and_reset(){
+
         parser.parse();
         reset_input();
     }
@@ -55,9 +64,9 @@ namespace formula_solver {
         variable_names.push_back(variable_name);
     }
 
-    int FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::vector<BinaryTruthTable> new_logical_operators) {
+    int FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::map<LogicalOperator, BinaryTruthTable> new_logical_operators){
         is_evaluation_mode = true;
-        this->logical_operators = new_logical_operators;
+        this->binary_logical_operators = new_logical_operators;
         set_variables(new_variable_evaluations);
         parse_and_reset();
         return formula_evaluation_result;

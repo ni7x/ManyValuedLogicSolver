@@ -22,6 +22,7 @@ namespace formula_solver {
     private:
         std::vector<std::vector<int>> generate_all_variables_evaluations() const;
         std::vector<BinaryTruthTable> generate_all_truth_tables() const;
+        std::vector<UnaryTruthTable> generate_all_unary_truth_tables() const;
     };
 }
 
