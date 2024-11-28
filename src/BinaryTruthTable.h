@@ -5,7 +5,6 @@
 #include <vector>
 #include <stdexcept>
 #include "LogicalOperator.h"
-#include "TruthTable.h"
 
 class BinaryTruthTable {
 public:
@@ -72,6 +71,8 @@ public:
         }
         return os;
     }
+
+
 
 
 public:

@@ -5,16 +5,17 @@
 #include <vector>
 #include <stdexcept>
 #include "LogicalOperator.h"
-#include "TruthTable.h"
 
-class UnaryTruthTable : TruthTable {
+
+class UnaryTruthTable {
 public:
     UnaryTruthTable(int num_of_logical_values)
             : num_of_logical_values(num_of_logical_values) {
-        if (num_of_logical_values <= 0) {
-            throw std::invalid_argument("");
-        }
+
         cells.resize(num_of_logical_values, 0);
+    }
+
+    UnaryTruthTable() : num_of_logical_values(0) {
     }
 
     UnaryTruthTable& operator=(const std::vector<int>& other){
@@ -30,7 +31,8 @@ public:
 
     int& operator[](int index) {
         if (index < 0 || index >= num_of_logical_values) {
-            throw std::out_of_range("Index out of bounds.");
+            std::cout << " wrong unary  " << index << std::endl;
+            throw std::out_of_range("Index outofbounds");
         }
         return cells[index];
     }
@@ -41,7 +43,7 @@ public:
             os << i << "\t";
         }
         os << std::endl;
-
+        os << "" << "\t";
         for (int i = 0; i < table.num_of_logical_values; i++) {
                 os << table[i] << "\t";
         }

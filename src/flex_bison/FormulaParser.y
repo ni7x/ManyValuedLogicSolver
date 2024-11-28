@@ -60,7 +60,7 @@ formula:
       VARIABLE { $$ = parser->get_variable_value($1); }
     | NUMBER { $$ = $1; }
     | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
-    | NOT formula { $$ = 0; }
+    | NOT formula { $$ = parser->unary_logical_operators[LogicalOperator::NOT][$2]; }
     | formula AND formula {  $$ =  parser->binary_logical_operators[LogicalOperator::AND][$1][$3]; }
     | formula OR formula { $$ = parser->binary_logical_operators[LogicalOperator::OR][$1][$3]; }
     | formula IMPLICATION formula { $$ = parser->binary_logical_operators[LogicalOperator::IMPLICATION][$1][$3]; }

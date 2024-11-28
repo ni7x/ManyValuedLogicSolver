@@ -23,14 +23,14 @@ namespace formula_solver {
         FormulaEvaluator(std::istream &input_stream, std::ostream &error_stream, int n, int k);
 
 
-        int evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::map<LogicalOperator, BinaryTruthTable> logical_operators);
+        int evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators, const std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators);
 
         int get_variable_value(char variable);
         void set_variables(const std::vector<int>& new_variable_evaluations);
 
         void set_formula_evaluation_result(int result);
-        std::map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
-        std::map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
+        std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
+        std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
 
     private:
         FormulaEvaluator(std::istream& input_stream, std::ostream& error_stream);

@@ -95,64 +95,99 @@ namespace formula_solver {
 
     void FormulaSolver::find_all_tautological_logical_operators() {
         auto all_possible_evaluations = generate_all_variables_evaluations();
-        int num_of_truth_table_combinations = std::pow(evaluator.number_of_logical_values,
-                                                       (evaluator.number_of_logical_values * evaluator.number_of_logical_values));
-        std::vector<int> true_values_in_logic = generate_last_k_values(evaluator.number_of_logical_values, evaluator.number_of_true_logical_values);
+        auto binary_truth_tables = generate_all_truth_tables();
+        auto unary_truth_tables = generate_all_unary_truth_tables();
+        auto true_values_in_logic = generate_last_k_values(
+                evaluator.number_of_logical_values, evaluator.number_of_true_logical_values);
 
-        std::cout << num_of_truth_table_combinations << " total two-argument truth tables for n-valued logic" << std::endl;
-        std::cout << std::pow(num_of_truth_table_combinations, evaluator.used_operators.size())
-                  << " total operator combinations for " << evaluator.used_operators.size() << " operators" << std::endl;
+        int total_binary_combinations = std::pow(evaluator.number_of_logical_values,
+                                                 evaluator.number_of_logical_values * evaluator.number_of_logical_values);
+        int total_unary_combinations = std::pow(evaluator.number_of_logical_values,
+                                                evaluator.number_of_logical_values);
 
-        std::vector<BinaryTruthTable> truth_tables = generate_all_truth_tables();
 
-        int num_used_operators = evaluator.used_operators.size();
-        std::vector<int> indices(num_used_operators, 0);
+        std::vector<LogicalOperator> operators(evaluator.used_operators.begin(), evaluator.used_operators.end());
+        std::vector<int> operator_indices(operators.size(), 0);
 
-        while (true) {
-            std::map<LogicalOperator, BinaryTruthTable> current_logical_operators;
-
-            int i = 0;
-            for (auto logical_operator : evaluator.used_operators) {
-                current_logical_operators[logical_operator] = truth_tables[indices[i]];
-                i++;
-            }
-
-            bool is_tautology = true;
-            for (const auto& evaluation : all_possible_evaluations) {
-                int formula_result = evaluator.evaluate_formula(evaluation, current_logical_operators);
-
-                if (std::find(true_values_in_logic.begin(), true_values_in_logic.end(), formula_result) ==
-                    true_values_in_logic.end()) {
-                    is_tautology = false;
-                    break;
-                }
-            }
-
-            if (is_tautology) {
-                std::cout << "==================" << std::endl;
-                for (auto& [op, table] : current_logical_operators) {
-                    std::cout << "Operator " << op << std::endl;
-                    std::cout << table;
-                    std::cout << std::endl;
-                }
-            }
-
-            int position = num_used_operators - 1;
-            while (position >= 0) {
-                if (indices[position] < num_of_truth_table_combinations - 1) {
-                    ++indices[position];
-                    break;
+        do {
+            std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
+            std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
+            for (size_t i = 0; i < operators.size(); i++) {
+                LogicalOperator current_operator = operators[i];
+                if (get_operator_type(current_operator) == OperatorType::UNARY) {
+                    unary_logical_operators[current_operator] = unary_truth_tables[operator_indices[i] % total_unary_combinations];
                 } else {
-                    indices[position] = 0;
-                    --position;
+                    binary_logical_operators[current_operator] = binary_truth_tables[operator_indices[i] % total_binary_combinations];
                 }
             }
 
-            if (position < 0) {
-                break;
+            if (check_tautology(all_possible_evaluations, true_values_in_logic,
+                                binary_logical_operators, unary_logical_operators)) {
+                display_tautology(binary_logical_operators, unary_logical_operators);
+            }
+
+        } while (update_operator_indices(operator_indices, operators,
+                                         total_binary_combinations, total_unary_combinations));
+    }
+
+
+
+    bool FormulaSolver::check_tautology(
+            const std::vector<std::vector<int>>& all_evaluations,
+            const std::vector<int>& true_values,
+            const std::unordered_map<LogicalOperator, BinaryTruthTable>& binary_logical_operators,
+            const std::unordered_map<LogicalOperator, UnaryTruthTable>& unary_logical_operators) {
+
+        for (const auto& evaluation : all_evaluations) {
+            int result = evaluator.evaluate_formula(evaluation, binary_logical_operators, unary_logical_operators);
+            if (std::find(true_values.begin(), true_values.end(), result) == true_values.end()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    void FormulaSolver::display_tautology(
+             std::unordered_map<LogicalOperator, BinaryTruthTable>& binary_logical_operators,
+             std::unordered_map<LogicalOperator, UnaryTruthTable>& unary_logical_operators) {
+
+        for (auto& [op, table] : binary_logical_operators) {
+            std::cout << op  << " operator" <<  std::endl  << table << std::endl;
+        }
+
+        for (auto& [op, table] : unary_logical_operators) {
+            std::cout << op  << " operator"  << std::endl << table << std::endl;
+        }
+
+        std::cout << std::endl << "==================" << std::endl;
+    }
+
+    bool FormulaSolver::update_operator_indices(
+            std::vector<int>& indices,
+            const std::vector<LogicalOperator>& operators,
+            int total_binary_combinations,
+            int total_unary_combinations) {
+
+        int position = operators.size() - 1;
+
+        while (position >= 0) {
+            int max_combinations = (get_operator_type(operators[position]) == OperatorType::UNARY)
+                                   ? total_unary_combinations
+                                   : total_binary_combinations;
+
+            if (indices[position] < max_combinations - 1) {
+                ++indices[position];
+                return true;
+            } else {
+                indices[position] = 0;
+                --position;
             }
         }
 
+        return false;
     }
+
+
 
 }

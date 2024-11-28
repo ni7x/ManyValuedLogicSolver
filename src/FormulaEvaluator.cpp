@@ -16,13 +16,12 @@ namespace formula_solver {
         number_of_logical_values = n;
         number_of_true_logical_values = k;
 
-        std::map<LogicalOperator, BinaryTruthTable> operator_map;
+        binary_logical_operators[LogicalOperator::AND] = BinaryTruthTable(n);
+        binary_logical_operators[LogicalOperator::OR] = BinaryTruthTable(n);
+        binary_logical_operators[LogicalOperator::IMPLICATION] = BinaryTruthTable(n);
+        binary_logical_operators[LogicalOperator::EQUIVALENCE] = BinaryTruthTable(n);
 
-        operator_map[LogicalOperator::AND] = BinaryTruthTable(n);
-        operator_map[LogicalOperator::OR] = BinaryTruthTable(n);
-        operator_map[LogicalOperator::IMPLICATION] = BinaryTruthTable(n);
-        operator_map[LogicalOperator::EQUIVALENCE] = BinaryTruthTable(n);
-        binary_logical_operators = operator_map;
+        unary_logical_operators[LogicalOperator::NOT] = UnaryTruthTable(n);
         if(!is_formula_valid()){
             throw std::runtime_error("Formula is invalid. Couldn't create Formula Solver.");
         }else{
@@ -64,10 +63,11 @@ namespace formula_solver {
         variable_names.push_back(variable_name);
     }
 
-    int FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::map<LogicalOperator, BinaryTruthTable> new_logical_operators){
+    int FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations, const std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators, const std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators){
         is_evaluation_mode = true;
-        this->binary_logical_operators = new_logical_operators;
-        set_variables(new_variable_evaluations);
+        this->binary_logical_operators = binary_logical_operators;
+        this->unary_logical_operators = unary_logical_operators;
+        this->variable_evaluations = new_variable_evaluations;
         parse_and_reset();
         return formula_evaluation_result;
     }
