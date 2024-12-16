@@ -28,6 +28,7 @@ public:
 
     int lex(Parser::semantic_type *yylval);
     std::set<LogicalOperator> used_operators;
+    int number_of_formulas = 1;
 
 private:
     std::istringstream input_stream;

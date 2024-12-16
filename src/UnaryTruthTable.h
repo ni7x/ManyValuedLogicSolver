@@ -38,12 +38,12 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, UnaryTruthTable& table) {
-        os << "" << "\t";
+
         for (int i = 0; i < table.num_of_logical_values; i++) {
             os << i << "\t";
         }
         os << std::endl;
-        os << "" << "\t";
+
         for (int i = 0; i < table.num_of_logical_values; i++) {
                 os << table[i] << "\t";
         }

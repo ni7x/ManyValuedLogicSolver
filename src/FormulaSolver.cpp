@@ -21,23 +21,32 @@ namespace formula_solver {
     }
 
     std::vector<UnaryTruthTable> FormulaSolver::generate_all_unary_truth_tables() const {
-        int num_elements = evaluator.number_of_logical_values;
         std::vector<UnaryTruthTable> truth_tables;
 
-        auto total_combinations = static_cast<int>(std::pow(evaluator.number_of_logical_values, num_elements));
+        int num_rows = evaluator.number_of_logical_values;
 
-        for (int index = 0; index < total_combinations; index++) {
-            std::vector<int> cell_values(num_elements, 0);
+        int total_combinations = std::pow(evaluator.number_of_logical_values, num_rows);
 
-            int temp_index = index;
-            for (int position = 0; position < num_elements; position++) {
-                cell_values[position] = temp_index % evaluator.number_of_logical_values;
-                temp_index /= evaluator.number_of_logical_values;
+        std::vector<int> current_evaluation(num_rows, 0);
+
+        for (int i = 0; i < total_combinations; i++) {
+            UnaryTruthTable table(evaluator.number_of_logical_values);
+
+            for (int row = 0; row < num_rows; ++row) {
+                table[row] = current_evaluation[row];
             }
 
-            UnaryTruthTable table(evaluator.number_of_logical_values);
-            table = cell_values;
             truth_tables.push_back(table);
+
+            for (int position = 0; position < current_evaluation.size(); position++) {
+                current_evaluation[position]++;
+
+                if (current_evaluation[position] < evaluator.number_of_logical_values) {
+                    break;
+                }
+
+                current_evaluation[position] = 0;
+            }
         }
 
         return truth_tables;
@@ -70,28 +79,39 @@ namespace formula_solver {
 
 
     std::vector<BinaryTruthTable> FormulaSolver::generate_all_truth_tables() const {
-        int num_elements = evaluator.number_of_logical_values * evaluator.number_of_logical_values;
         std::vector<BinaryTruthTable> truth_tables;
 
-        auto total_combinations = static_cast<int>(std::pow(evaluator.number_of_logical_values, num_elements));
+        int num_rows = evaluator.number_of_logical_values * evaluator.number_of_logical_values;
 
-        for (int index = 0; index < total_combinations; index++) {
-            std::vector<int> cell_values(num_elements, 0);
+        int total_combinations = std::pow(evaluator.number_of_logical_values, num_rows);
 
-            int temp_index = index;
-            for (int position = 0; position < num_elements; position++) {
-                cell_values[position] = temp_index % evaluator.number_of_logical_values;
-                temp_index /= evaluator.number_of_logical_values;
+        std::vector<int> current_evaluation(num_rows, 0);
+
+        for (int i = 0; i < total_combinations; i++) {
+            BinaryTruthTable table(evaluator.number_of_logical_values);
+
+            int index = 0;
+            for (int row = 0; row < evaluator.number_of_logical_values; ++row) {
+                for (int col = 0; col < evaluator.number_of_logical_values; ++col) {
+                    table[row][col] = current_evaluation[index++];
+                }
             }
 
-            BinaryTruthTable table(evaluator.number_of_logical_values);
-            table  = cell_values;
             truth_tables.push_back(table);
+
+            for (int position = 0; position < current_evaluation.size(); position++) {
+                current_evaluation[position]++;
+
+                if (current_evaluation[position] < evaluator.number_of_logical_values) {
+                    break;
+                }
+
+                current_evaluation[position] = 0;
+            }
         }
 
         return truth_tables;
     }
-
 
     void FormulaSolver::find_all_tautological_logical_operators() {
         auto all_possible_evaluations = generate_all_variables_evaluations();
@@ -108,7 +128,7 @@ namespace formula_solver {
 
         std::vector<LogicalOperator> operators(evaluator.used_operators.begin(), evaluator.used_operators.end());
         std::vector<int> operator_indices(operators.size(), 0);
-
+        int n = 0;
         do {
             std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
             std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
@@ -123,11 +143,14 @@ namespace formula_solver {
 
             if (check_tautology(all_possible_evaluations, true_values_in_logic,
                                 binary_logical_operators, unary_logical_operators)) {
+                n++;
                 display_tautology(binary_logical_operators, unary_logical_operators);
             }
 
         } while (update_operator_indices(operator_indices, operators,
                                          total_binary_combinations, total_unary_combinations));
+
+        std::cout << "Count " << n;
     }
 
 
@@ -138,13 +161,20 @@ namespace formula_solver {
             const std::unordered_map<LogicalOperator, BinaryTruthTable>& binary_logical_operators,
             const std::unordered_map<LogicalOperator, UnaryTruthTable>& unary_logical_operators) {
 
+        auto isTautology = true;
+
         for (const auto& evaluation : all_evaluations) {
-            int result = evaluator.evaluate_formula(evaluation, binary_logical_operators, unary_logical_operators);
-            if (std::find(true_values.begin(), true_values.end(), result) == true_values.end()) {
-                return false;
+
+            std::list<int> result = evaluator.evaluate_formula(evaluation, binary_logical_operators, unary_logical_operators);
+            for (const auto& f : result) {
+                if (std::find(true_values.begin(), true_values.end(), f) == true_values.end()) {
+                    isTautology = false;
+                    break;
+                }
             }
+
         }
-        return true;
+        return isTautology;
     }
 
 

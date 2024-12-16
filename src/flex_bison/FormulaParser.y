@@ -33,11 +33,11 @@
 
 %token<int> NUMBER
 %token<char> VARIABLE
-%token AND EQUIVALENCE OR IMPLICATION 
+%token AND EQUIVALENCE OR IMPLICATION
 %token NOT
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS
 %token END_OF_LINE
-
+%token FORMULA_SEPARATOR
 /* ORDER = NOT AND OR EQUICALENCE IMPLICATION */
 
 %right IMPLICATION
@@ -49,22 +49,22 @@
 %nonassoc LEFT_PARENTHESIS RIGHT_PARENTHESIS
 
 %type<int> formula
-%type<int> logical_expression
 
-%start logical_expression
+%start formula_list
 
 %%
-logical_expression: formula {$$ = $1; parser->set_formula_evaluation_result($1);}
+formula_list:
+    formula {parser->add_formula_evaluation_result($1); }
+    | formula_list FORMULA_SEPARATOR formula {parser->add_formula_evaluation_result($3);}
+;
 
 formula:
       VARIABLE { $$ = parser->get_variable_value($1); }
     | NUMBER { $$ = $1; }
     | LEFT_PARENTHESIS formula RIGHT_PARENTHESIS { $$ = $2; }
     | NOT formula { $$ = parser->unary_logical_operators[LogicalOperator::NOT][$2]; }
-    | formula AND formula {  $$ =  parser->binary_logical_operators[LogicalOperator::AND][$1][$3]; }
+    | formula AND formula { $$ = parser->binary_logical_operators[LogicalOperator::AND][$1][$3]; }
     | formula OR formula { $$ = parser->binary_logical_operators[LogicalOperator::OR][$1][$3]; }
     | formula IMPLICATION formula { $$ = parser->binary_logical_operators[LogicalOperator::IMPLICATION][$1][$3]; }
     | formula EQUIVALENCE formula { $$ = parser->binary_logical_operators[LogicalOperator::EQUIVALENCE][$1][$3]; }
     ;
-
-%%

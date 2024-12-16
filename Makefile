@@ -1,4 +1,3 @@
-# Variables
 PARSER = FormulaParser
 EXEC = FormulaSolver
 MAIN_FILE = src/main.cpp
@@ -28,6 +27,6 @@ clean:
 rebuild: clean all
 
 run: rebuild
-	./$(EXEC) 3 1
+	./$(EXEC) 2 1
 
 .PHONY: all clean rebuild

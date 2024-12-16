@@ -24,7 +24,7 @@ add_executable(MyExecutable ${SOURCES} ${HEADERS}
         src/FormulaEvaluator.cpp
         src/include/FormulaEvaluator.h
         src/include/FormulaParserParams.h
-        src/TruthTable.h)
+)
 
 # Optionally, add include directories if needed
 target_include_directories(MyExecutable PRIVATE ${SRC_DIR})

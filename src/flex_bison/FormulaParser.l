@@ -6,6 +6,7 @@
 #undef YY_DECL
 #define YY_DECL int formula_solver::Scanner::lex(formula_solver::Parser::semantic_type *yylval)
 std::set<LogicalOperator> used_operators;
+    int number_of_formulas;
 %}
 
 %option c++ noyywrap noyylineno nodefault
@@ -23,6 +24,7 @@ std::set<LogicalOperator> used_operators;
 \(                      { return Parser::token::LEFT_PARENTHESIS; }
 \)                      { return Parser::token::RIGHT_PARENTHESIS; }
 \n                      { return Parser::token::END_OF_LINE; }
+\,                      {  number_of_formulas++;return Parser::token::FORMULA_SEPARATOR; }
 [ \t]                   { /* skip whitespace */ }
 .                       {   std::ostringstream oss;
                             oss << "Error: Unrecognized character '" << yytext << "'\n";

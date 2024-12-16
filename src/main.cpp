@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     formula_solver::FormulaSolver solver(input_formula, std::cerr, n, k);
 
     solver.find_all_tautological_logical_operators();
-
+    std::cout << std::endl;
 
 }
 
