@@ -16,6 +16,8 @@ namespace formula_solver {
         number_of_logical_values = n;
         number_of_true_logical_values = k;
 
+
+
         binary_logical_operators[LogicalOperator::AND] = BinaryTruthTable(n);
         binary_logical_operators[LogicalOperator::OR] = BinaryTruthTable(n);
         binary_logical_operators[LogicalOperator::IMPLICATION] = BinaryTruthTable(n);
@@ -23,7 +25,7 @@ namespace formula_solver {
 
         unary_logical_operators[LogicalOperator::NOT] = UnaryTruthTable(n);
         if(!is_formula_valid()){
-            throw std::runtime_error("Formula is invalid. Couldn't create Formula Solver.");
+            throw std::runtime_error(" Formula is invalid. Couldn't create Formula Evaluator.");
         }else{
             this->used_operators = scanner.used_operators;
             variable_names.sort();
@@ -39,10 +41,20 @@ namespace formula_solver {
     void FormulaEvaluator::reset_input() {
         input_stream.clear();
         input_stream.seekg(0, std::ios::beg);
+        if (input_stream.eof()) {
+            std::cerr << "End of stream reached during reset" << std::endl;
+        }
+        if (!input_stream) {
+            std::cerr << "Error occurred in input stream" << std::endl;
+        }
     }
 
     void FormulaEvaluator::parse_and_reset(){
         formulas_evaluations.clear();
+        std::string content((std::istreambuf_iterator<char>(input_stream)),
+                            std::istreambuf_iterator<char>());
+        std::cout << "Input stream content: " << content << std::endl;
+        reset_input();
         parser.parse();
         reset_input();
     }
@@ -51,6 +63,7 @@ namespace formula_solver {
         try {
             is_evaluation_mode = false;
             parse_and_reset();
+            std::cout << "parsed first itme";
             return true;
         } catch (const std::exception& e) {
             std::cerr << "Error: Invalid formula syntax. " << e.what() << std::endl;
@@ -68,6 +81,15 @@ namespace formula_solver {
         this->binary_logical_operators = binary_logical_operators;
         this->unary_logical_operators = unary_logical_operators;
         this->variable_evaluations = new_variable_evaluations;
+        std::cout << "Evaluating";
+        parse_and_reset();
+        return this->formulas_evaluations;
+    }
+
+    std::list<int> FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations){
+        is_evaluation_mode = true;
+        reset_input();
+        std::cout << "Evaluating";
         parse_and_reset();
         return this->formulas_evaluations;
     }
