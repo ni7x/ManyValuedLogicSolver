@@ -114,56 +114,52 @@ namespace formula_solver {
     }
 
     void FormulaSolver::find_all_tautological_logical_operators() {
+
         auto all_possible_evaluations = generate_all_variables_evaluations();
         auto binary_truth_tables = generate_all_truth_tables();
         auto unary_truth_tables = generate_all_unary_truth_tables();
         auto true_values_in_logic = generate_last_k_values(
                 evaluator.number_of_logical_values, evaluator.number_of_true_logical_values);
 
-        int num_threads = std::thread::hardware_concurrency();
-        int total_operators = evaluator.used_operators.size();
 
-        auto worker = [&](int start, int end) {
-            // Create independent instances for each thread
-            FormulaParser thread_parser;
-            FormulaEvaluator thread_evaluator;
+        int total_binary_combinations = static_cast<int>(std::pow(evaluator.number_of_logical_values,
+                                                                  evaluator.number_of_logical_values * evaluator.number_of_logical_values));
 
-            for (int i = start; i < end; ++i) {
-                LogicalOperator current_operator = evaluator.used_operators[i];
+        int total_unary_combinations = static_cast<int>(std::pow(evaluator.number_of_logical_values,
+                                                                 evaluator.number_of_logical_values));
 
-                std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
-                std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
 
-                if (get_operator_type(current_operator) == OperatorType::UNARY) {
-                    unary_logical_operators[current_operator] = unary_truth_tables[i % unary_truth_tables.size()];
-                } else {
-                    binary_logical_operators[current_operator] = binary_truth_tables[i % binary_truth_tables.size()];
+        std::cout << total_binary_combinations << std::endl;
+
+        std::vector<LogicalOperator> operators(evaluator.used_operators.begin(), evaluator.used_operators.end());
+        std::vector<int> operator_indices(operators.size(), 0);
+        int n = 0;
+        do {
+            std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
+            std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
+            for (int i = 0; i < operators.size(); i++) {
+                LogicalOperator current_operator = operators[i];
+                for(auto indices: operator_indices){
+                    std::cout << indices << " ";
                 }
-
-                if (check_tautology(all_possible_evaluations, true_values_in_logic,
-                                    binary_logical_operators, unary_logical_operators)) {
-
-                    // Ensure console output remains thread-safe
-                    {
-                        std::lock_guard<std::mutex> lock(display_mutex);
-                        display_tautology(binary_logical_operators, unary_logical_operators);
-                    }
+                std::cout << std::endl;
+                if (get_operator_type(current_operator) == OperatorType::UNARY) {
+                    unary_logical_operators[current_operator] = unary_truth_tables[operator_indices[i] % total_unary_combinations];
+                } else {
+                    binary_logical_operators[current_operator] = binary_truth_tables[operator_indices[i] % total_binary_combinations];
                 }
             }
-        };
 
-        int chunk_size = total_operators / num_threads;
-        std::vector<std::thread> threads;
+            if (check_tautology(all_possible_evaluations, true_values_in_logic,
+                                binary_logical_operators, unary_logical_operators)) {
+                n++;
+                display_tautology(binary_logical_operators, unary_logical_operators);
+            }
 
-        for (int i = 0; i < num_threads; ++i) {
-            int start = i * chunk_size;
-            int end = (i == num_threads - 1) ? total_operators : start + chunk_size;
-            threads.emplace_back(worker, start, end);
-        }
+        } while (update_operator_indices(operator_indices, operators,
+                                         total_binary_combinations, total_unary_combinations));
 
-        for (auto& t : threads) {
-            t.join();
-        }
+        std::cout << "Count " << n;
     }
 
 
@@ -193,8 +189,8 @@ namespace formula_solver {
 
 
     void FormulaSolver::display_tautology(
-             std::unordered_map<LogicalOperator, BinaryTruthTable>& binary_logical_operators,
-             std::unordered_map<LogicalOperator, UnaryTruthTable>& unary_logical_operators) {
+            std::unordered_map<LogicalOperator, BinaryTruthTable>& binary_logical_operators,
+            std::unordered_map<LogicalOperator, UnaryTruthTable>& unary_logical_operators) {
 
         for (auto& [op, table] : binary_logical_operators) {
             std::cout << op  << " operator" <<  std::endl  << table << std::endl;
