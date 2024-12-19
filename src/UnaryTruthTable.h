@@ -21,7 +21,8 @@ public:
     UnaryTruthTable& operator=(const std::vector<int>& other){
         int expected_size = num_of_logical_values;
         if (other.empty() || other.size() != expected_size) {
-            throw std::invalid_argument("Input vector must be square and non-empty.");
+            std::cout << other.size() << " " << expected_size;
+            throw std::invalid_argument("Input vector must be non-empty.");
         }
 
         cells = other;
