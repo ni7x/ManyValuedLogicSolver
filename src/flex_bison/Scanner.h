@@ -23,8 +23,8 @@ public:
     Scanner(std::istream* arg_yyin = nullptr, std::ostream* arg_yyout = nullptr)
         : yyFlexLexer(arg_yyin, arg_yyout) {}
 
-    Scanner(const std::string& input, std::ostream& arg_yyout)
-        : yyFlexLexer(input_stream, arg_yyout), input_stream(input) {}
+    Scanner(std::string& input, std::ostream& arg_yyout)
+            : yyFlexLexer(input_stream, arg_yyout), input_stream(input) {}
 
     int lex(Parser::semantic_type *yylval);
     std::set<LogicalOperator> used_operators;

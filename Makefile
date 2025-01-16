@@ -18,7 +18,7 @@ $(GENERATED_DIR)/$(PARSER).yy.c: $(SRC_DIR)/flex_bison/$(PARSER).l $(GENERATED_D
 	win_flex -o$(GENERATED_DIR)/$(PARSER).yy.c $(SRC_DIR)/flex_bison/$(PARSER).l
 
 $(GENERATED_DIR)/$(EXEC): $(GENERATED_DIR)/$(PARSER).yy.c $(GENERATED_DIR)/$(PARSER).tab.c $(GENERATED_DIR)/$(PARSER).tab.h
-	g++ -Ofast -o $(EXEC) $(GENERATED_DIR)/$(PARSER).tab.c $(GENERATED_DIR)/$(PARSER).yy.c $(SRC_DIR)/FormulaSolver.cpp $(SRC_DIR)/FormulaEvaluator.cpp ${MAIN_FILE} -I./$(SRC_DIR) -I./$(SRC_DIR)/flex_bison
+	g++ -g -Ofast -o $(EXEC) $(GENERATED_DIR)/$(PARSER).tab.c $(GENERATED_DIR)/$(PARSER).yy.c $(SRC_DIR)/FormulaSolver.cpp $(SRC_DIR)/FormulaEvaluator.cpp ${MAIN_FILE} -I./$(SRC_DIR) -I./$(SRC_DIR)/flex_bison
 
 
 clean:
@@ -27,6 +27,6 @@ clean:
 rebuild: clean all
 
 run: rebuild
-	./$(EXEC) 3 1
+	./$(EXEC) 2 1
 
 .PHONY: all clean rebuild
