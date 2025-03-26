@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "----------ENTER FORMULA----------" << std::endl;
 
-    std::istringstream input_stream("(p=>q) => ((q => r) =>(p=>r)), (!p => p) => p, p => (!p => q)");
+    std::istringstream input_stream("(a => b) => !(a => !b),(a => !b) => !(a => b)");
 
     std::shared_ptr<std::istream> shared_input_stream = std::make_shared<std::istringstream>(input_stream.str());
 

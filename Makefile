@@ -27,6 +27,6 @@ clean:
 rebuild: clean all
 
 run: rebuild
-	./$(EXEC) 2 1
+	./$(EXEC) 4 1
 
 .PHONY: all clean rebuild

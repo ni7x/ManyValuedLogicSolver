@@ -5,7 +5,7 @@
 #include <vector>
 #include <stdexcept>
 #include "LogicalOperator.h"
-
+#include <iomanip>
 class BinaryTruthTable {
 public:
     BinaryTruthTable(int num_of_logical_values)
@@ -56,21 +56,65 @@ public:
 
 
     friend std::ostream& operator<<(std::ostream& os, BinaryTruthTable& table) {
-        os << "" << "\t";
-        for (int i = 0; i < table.num_of_logical_values; i++) {
-            os << i << "\t";
+        const int width = 4;
+        os << std::setw(width) << " " << " |";
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << std::setw(width) << i;
         }
-        os << std::endl;
+        os << "\n";
 
-        for (int i = 0; i < table.num_of_logical_values; i++) {
-            os << i << "\t";
-            for (int j = 0; j < table.num_of_logical_values; j++) {
-                os << table[i][j] << "\t";
+        os << std::string((table.num_of_logical_values + 1) * width + 2, '-') << "\n";
+
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << std::setw(width) << i << " |";
+            for (int j = 0; j < table.num_of_logical_values; ++j) {
+                os << std::setw(width) << table[i][j];
             }
-            os << std::endl;
+            os << "\n";
         }
         return os;
     }
+
+
+    friend std::ostream& operator<<(std::ostream& os, std::pair<LogicalOperator, BinaryTruthTable>& op_table) {
+        LogicalOperator op = op_table.first;
+        BinaryTruthTable& table = op_table.second;
+
+        const int width = 4;
+
+
+        switch (op) {
+            case LogicalOperator::AND: os << "  &  "; break;
+            case LogicalOperator::OR: os << "  |  "; break;
+            case LogicalOperator::IMPLICATION: os << " =>  "; break;
+            case LogicalOperator::EQUIVALENCE: os << " <=> "; break;
+        }
+
+
+        os << "|";
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << std::setw(width) << i;
+        }
+        os << "\n";
+
+
+        os << std::string(width + 1, '-') << "+";
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << std::string(width, '-');
+        }
+        os << "\n";
+
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << std::setw(width) << i << " |";
+            for (int j = 0; j < table.num_of_logical_values; ++j) {
+                os << std::setw(width - 1) << table[i][j];
+            }
+            os << "\n";
+        }
+
+        return os << std::endl;
+    }
+
 
 
 

@@ -36,10 +36,10 @@ namespace formula_solver {
 
         void initialize_data();
 
-        void find_tautologies_in_range(
+        uint64_t find_tautologies_in_range(
                 FormulaEvaluator* local_evaluator,
-                int indexStart,
-                int indexEnd,
+                uint64_t indexStart,
+                uint64_t indexEnd,
                 std::mutex& output_mutex
         );
 
@@ -50,9 +50,9 @@ namespace formula_solver {
         std::vector<BinaryTruthTable> binary_truth_tables;
         std::vector<UnaryTruthTable> unary_truth_tables;
         std::vector<int> true_values_in_logic;
-        int total_binary_combinations;
-        int total_unary_combinations;
-        int total_unary_binary_table_combinations;
+        uint64_t total_binary_combinations = 0;
+        uint64_t total_unary_combinations = 0;
+        uint64_t total_unary_binary_table_combinations = 0;
 
         std::vector<BinaryTruthTable> generate_all_truth_tables() const;
         std::vector<UnaryTruthTable> generate_all_unary_truth_tables() const;

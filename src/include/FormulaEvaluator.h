@@ -38,7 +38,7 @@ namespace formula_solver {
         std::unordered_map<LogicalOperator, BinaryTruthTable> binary_logical_operators;
         std::unordered_map<LogicalOperator, UnaryTruthTable> unary_logical_operators;
         std::vector<int> variable_evaluations;
-        std::list<char> variable_names;
+        std::set<char> variable_names;
         std::unordered_map<char, int> variable_index_map;
         std::set<LogicalOperator> used_operators;
 

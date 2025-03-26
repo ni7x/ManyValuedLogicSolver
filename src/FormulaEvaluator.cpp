@@ -23,7 +23,6 @@ namespace formula_solver {
             throw std::runtime_error("Formula is invalid. Couldn't create Formula Evaluator.");
         } else {
             this->used_operators = scanner.used_operators;
-            variable_names.sort();
             variable_evaluations.resize(variable_names.size());
             int index = 0;
             for (const auto& variable : variable_names) {
@@ -67,7 +66,7 @@ namespace formula_solver {
     }
 
     void FormulaEvaluator::add_variable_name(char variable_name) {
-        variable_names.push_back(variable_name);
+        variable_names.insert(variable_name);
     }
 
     std::list<int> FormulaEvaluator::evaluate_formula(const std::vector<int>& new_variable_evaluations,

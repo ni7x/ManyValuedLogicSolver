@@ -40,14 +40,23 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, UnaryTruthTable& table) {
 
-        for (int i = 0; i < table.num_of_logical_values; i++) {
-            os << i << "\t";
+        // Print the operator (in case of unary operator '!')
+        os << "  ! |";
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << "   " << i;
         }
-        os << std::endl;
+        os << "\n";
 
-        for (int i = 0; i < table.num_of_logical_values; i++) {
-                os << table[i] << "\t";
+        // Print the separator line
+        os << "----+--------\n";
+
+        // Print the actual truth table values
+        os << "    |";
+        for (int i = 0; i < table.num_of_logical_values; ++i) {
+            os << "   " << table[i];
         }
+        os << "\n";
+
         return os;
     }
 
